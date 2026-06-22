@@ -30,7 +30,7 @@ function renderSidebar(d) {
     <table class="info-table">
       <tr><td>Location</td><td>${d.location}</td></tr>
       <tr><td>Status</td><td>${d.status}</td></tr>
-      <tr><td>Email</td><td>${d.email}</td></tr>
+      ${d.email ? `<tr><td>Email</td><td>${d.email}</td></tr>` : ''}
     </table>
     <hr class="sidebar-divider" />
     ${d.skills.length ? `
