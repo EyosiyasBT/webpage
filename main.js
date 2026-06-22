@@ -4,6 +4,7 @@ fetch('/data.json')
     renderSidebar(d);
     if (document.getElementById('hero')) renderHome(d);
     if (document.getElementById('projects-grid')) renderProjects(d);
+    if (document.getElementById('experience-list')) renderExperience(d);
     if (d.stats.some(s => s.github)) fetchGithubStats();
   });
 
@@ -33,7 +34,7 @@ function renderSidebar(d) {
     </table>
     <hr class="sidebar-divider" />
     ${d.skills.length ? `
-      <div class="skills-label">Skills</div>
+      <div class="skills-label">Top Skills</div>
       ${d.skills.map(sk => `
         <div class="skill-bar">
           <div class="skill-bar-top"><span>${sk.name}</span><span>${sk.level}%</span></div>
@@ -42,6 +43,7 @@ function renderSidebar(d) {
       <hr class="sidebar-divider" />
     ` : ''}
     <div class="social-links">
+      <a href="${d.links.linkedin}">LinkedIn</a>
       <a href="${d.links.showcase}">ShowCase</a>
     </div>
   `;
@@ -61,16 +63,6 @@ function renderHome(d) {
       <div class="stat-label">${s.label}</div>
     </div>`).join('');
 
-  document.getElementById('experience-list').innerHTML = d.experience.map(e => `
-    <div class="timeline-item">
-      <div class="timeline-dot"></div>
-      <div class="timeline-content">
-        <h3>${e.role}</h3>
-        <div class="timeline-meta">${e.company} · ${e.period}</div>
-        <p>${e.description}</p>
-      </div>
-    </div>`).join('');
-
   renderProjectCards(d.projects, document.getElementById('projects-preview'), 3);
 }
 
@@ -87,4 +79,38 @@ function renderProjectCards(projects, container, limit) {
       ? `<a href="${p.url}" class="project-card">${inner}</a>`
       : `<div class="project-card">${inner}</div>`;
   }).join('');
+}
+
+function renderExperience(d) {
+  const expEl = document.getElementById('experience-list');
+  if (expEl) {
+    expEl.innerHTML = d.experience.map(e => `
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <h3>${e.role}</h3>
+          <div class="timeline-meta">${e.company} · ${e.period}</div>
+          <p>${e.description}</p>
+        </div>
+      </div>`).join('');
+  }
+
+  const eduEl = document.getElementById('education-list');
+  if (eduEl) {
+    eduEl.innerHTML = d.education.map(e => `
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <h3>${e.degree}</h3>
+          <div class="timeline-meta">${e.school} · ${e.period}</div>
+          <p>${e.field}</p>
+        </div>
+      </div>`).join('');
+  }
+
+  const certEl = document.getElementById('certifications-list');
+  if (certEl) {
+    certEl.innerHTML = d.certifications.map(c => `
+      <div class="cert-item">${c}</div>`).join('');
+  }
 }

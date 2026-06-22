@@ -1,14 +1,26 @@
 {
-  "name": "Eyosiyas",
-  "title": "Problem Solver",
+  "name": "Eyosiyas Taye",
+  "title": "Problem Solver & Data Engineer",
   "location": "Oslo, Norway",
   "status": "Chilling",
-  "email": "Available on request",
-  "bio": "Placeholder bio — passionate about building clean, reliable software. Background in Python and SQL, currently expanding into web development.",
-  "skills": [],
+  "email": "eyosiyasbt@gmail.com",
+  "bio": "I am a problem solver at heart who explores the field of Artificial Intelligence, Machine Learning and general automation using programming. What I lack in experience I make up in the willingness to learn and great energy :D",
+  "skills": [
+    { "name": "SQL", "level": 90 },
+    { "name": "SAS Data Integration Studio", "level": 85 },
+    { "name": "SAS (Software)", "level": 80 },
+    { "name": "Python", "level": 75 }
+  ],
+  "certifications": [
+    "Microsoft Certified: Azure AI Fundamentals (AI-900)",
+    "Microsoft Certified: Azure Fundamentals (AZ-900)",
+    "Microsoft Certified: Azure Data Fundamentals (DP-900)",
+    "Data Analysis and Reporting in SAS Visual Analytics",
+    "Sustainability Globe: Awareness Module"
+  ],
   "stats": [
-    { "value": "3+", "label": "Years Coding" },
-    { "value": "10+", "label": "Projects" },
+    { "value": "3+", "label": "Years Experience" },
+    { "value": "2", "label": "Degrees" },
     { "value": "...", "label": "Public Repos", "github": true }
   ],
   "projects": [
@@ -17,35 +29,56 @@
       "description": "A curated collection of projects and experiments.",
       "url": "https://github.com/EyosiyasBT/ShowCase",
       "tags": ["Python", "GitHub"]
-    },
-    {
-      "name": "Project Placeholder",
-      "description": "Description of a project goes here. Replace with real content.",
-      "url": null,
-      "tags": ["SQL"]
-    },
-    {
-      "name": "Project Placeholder",
-      "description": "Description of a project goes here. Replace with real content.",
-      "url": null,
-      "tags": ["Python"]
     }
   ],
   "experience": [
     {
-      "role": "Role Placeholder",
-      "company": "Company",
-      "period": "2024 – Present",
-      "description": "Short description of responsibilities and achievements."
+      "role": "Data Engineer",
+      "company": "Knowit",
+      "period": "May 2026 – Present",
+      "description": "Data engineering at Knowit, Oslo."
     },
     {
-      "role": "Role Placeholder",
-      "company": "Company",
-      "period": "2022 – 2024",
-      "description": "Short description of responsibilities and achievements."
+      "role": "Insights & Data: Data Engineer",
+      "company": "Capgemini",
+      "period": "Aug 2023 – May 2026",
+      "description": "Data engineering within the Insights & Data practice, Oslo."
+    },
+    {
+      "role": "Insights & Data: Data Engineer (Internship)",
+      "company": "Capgemini",
+      "period": "Jun 2022 – Jul 2022",
+      "description": "Summer internship in data engineering, Oslo."
+    },
+    {
+      "role": "Teaching Assistant — IN3110, IN1080, IN1020",
+      "company": "University of Oslo (UiO)",
+      "period": "Jul 2020 – Dec 2021",
+      "description": "Teaching assistant across three courses: high-level programming (IN3110), mechatronics (IN1080), and introduction to computer technology (IN1020)."
+    },
+    {
+      "role": "Grocery Cashier",
+      "company": "Coop Mega",
+      "period": "Dec 2019 – Apr 2020",
+      "description": "Customer service and cashier duties."
+    }
+  ],
+  "education": [
+    {
+      "degree": "Master's degree",
+      "field": "Informatics: Robotics and Intelligent Systems",
+      "school": "University of Oslo (UiO)",
+      "period": "Aug 2021 – Jun 2023"
+    },
+    {
+      "degree": "Bachelor's degree",
+      "field": "Informatics: Robotics and Intelligent Systems",
+      "school": "University of Oslo (UiO)",
+      "period": "Aug 2018 – Jun 2021"
     }
   ],
   "links": {
-    "showcase": "https://github.com/EyosiyasBT/ShowCase"
+    "showcase": "https://github.com/EyosiyasBT/ShowCase",
+    "linkedin": "https://www.linkedin.com/in/ebtaye"
   }
 }
