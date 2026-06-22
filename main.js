@@ -5,6 +5,7 @@ fetch('/data.json')
     if (document.getElementById('hero')) renderHome(d);
     if (document.getElementById('projects-grid')) renderProjects(d);
     if (document.getElementById('experience-list')) renderExperience(d);
+    if (document.getElementById('skills-page')) renderSkillsPage(d);
     if (d.stats.some(s => s.github)) fetchGithubStats();
   });
 
@@ -86,6 +87,31 @@ function renderProjectCards(projects, container, limit) {
     return p.url
       ? `<a href="${p.url}" class="project-card">${inner}</a>`
       : `<div class="project-card">${inner}</div>`;
+  }).join('');
+}
+
+function renderSkillsPage(d) {
+  const categories = [...new Set(d.skills.map(s => s.category))];
+  const labels = { 1: 'Attempted', 2: 'Learning', 3: 'Comfortable', 4: 'Advanced', 5: 'Mastered' };
+
+  document.getElementById('skills-page').innerHTML = categories.map(cat => {
+    const catSkills = d.skills.filter(s => s.category === cat);
+    return `
+      <section class="section">
+        <div class="section-title">${cat}</div>
+        <div class="skills-grid">
+          ${catSkills.map(s => `
+            <div class="skill-card">
+              <div class="skill-card-top">
+                <span class="skill-card-name">${s.name}</span>
+                <span class="skill-card-label">${labels[s.level] || ''}</span>
+              </div>
+              <div class="skill-bar-track">
+                <div class="skill-bar-fill" style="width:${s.level * 20}%"></div>
+              </div>
+            </div>`).join('')}
+        </div>
+      </section>`;
   }).join('');
 }
 
