@@ -3,66 +3,461 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Eyosiyas</title>
+  <title>Eyosiyas — Portfolio</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #111;
+      --sidebar-bg: #1a1a1a;
+      --accent: #f0c040;
+      --text: #e0e0e0;
+      --muted: #888;
+      --border: #2a2a2a;
+      --card-bg: #1e1e1e;
+    }
+
+    html { scroll-behavior: smooth; }
 
     body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      display: flex;
       min-height: 100vh;
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width: 260px;
+      min-height: 100vh;
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--border);
+      padding: 2rem 1.5rem;
+      position: sticky;
+      top: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .avatar {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: var(--border);
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #0f0f0f;
-      color: #f0f0f0;
-      font-family: 'Segoe UI', system-ui, sans-serif;
+      font-size: 2.2rem;
+      margin: 0 auto;
+      border: 3px solid var(--accent);
     }
 
-    .card {
+    .sidebar-name {
       text-align: center;
-      padding: 2rem;
+      font-size: 1.2rem;
+      font-weight: 700;
     }
 
-    h1 {
-      font-size: 2.5rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
+    .sidebar-title {
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 0.25rem;
+    }
+
+    .sidebar-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+    }
+
+    .info-table {
+      width: 100%;
+      font-size: 0.85rem;
+      border-collapse: collapse;
+    }
+
+    .info-table tr td {
+      padding: 0.3rem 0;
+    }
+
+    .info-table td:first-child {
+      color: var(--muted);
+      width: 50%;
+    }
+
+    .info-table td:last-child {
+      text-align: right;
+      color: var(--text);
+    }
+
+    .skills-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
       margin-bottom: 0.5rem;
     }
 
-    p {
-      color: #888;
-      font-size: 1.1rem;
+    .skill-bar {
+      margin-bottom: 0.75rem;
+    }
+
+    .skill-bar-top {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .skill-bar-track {
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+    }
+
+    .skill-bar-fill {
+      height: 4px;
+      background: var(--accent);
+      border-radius: 2px;
+    }
+
+    .social-links {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      margin-top: auto;
+    }
+
+    .social-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.8rem;
+      border: 1px solid var(--border);
+      padding: 0.3rem 0.6rem;
+      border-radius: 4px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .social-links a:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    /* ── Main ── */
+    .main {
+      flex: 1;
+      padding: 3rem 3rem 3rem 3rem;
+      max-width: 900px;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2.5rem;
       margin-bottom: 2rem;
     }
 
-    .links {
+    .hero-greeting {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .hero h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 1rem;
+    }
+
+    .hero h1 span { color: var(--accent); }
+
+    .hero-sub {
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.6;
+      max-width: 540px;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-cta {
+      display: inline-block;
+      background: var(--accent);
+      color: #111;
+      font-weight: 700;
+      padding: 0.6rem 1.4rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: opacity 0.2s;
+    }
+
+    .hero-cta:hover { opacity: 0.85; }
+
+    /* ── Stats ── */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem;
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--accent);
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 0.25rem;
+    }
+
+    /* ── Section ── */
+    .section {
+      margin-bottom: 2.5rem;
+    }
+
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* ── Projects ── */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1rem;
+    }
+
+    .project-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem;
+      text-decoration: none;
+      color: var(--text);
+      transition: border-color 0.2s;
+      display: block;
+    }
+
+    .project-card:hover { border-color: var(--accent); }
+
+    .project-card h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+
+    .project-card p {
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .project-tag {
+      display: inline-block;
+      font-size: 0.72rem;
+      background: var(--border);
+      color: var(--muted);
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      margin-top: 0.6rem;
+      margin-right: 0.25rem;
+    }
+
+    /* ── Experience ── */
+    .timeline-item {
       display: flex;
       gap: 1rem;
-      justify-content: center;
+      margin-bottom: 1.25rem;
     }
 
-    a {
-      color: #f0f0f0;
-      text-decoration: none;
-      border: 1px solid #333;
-      padding: 0.5rem 1.2rem;
-      border-radius: 6px;
+    .timeline-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      margin-top: 0.4rem;
+      flex-shrink: 0;
+    }
+
+    .timeline-content h3 {
       font-size: 0.95rem;
-      transition: border-color 0.2s, color 0.2s;
+      font-weight: 700;
     }
 
-    a:hover {
-      border-color: #f0f0f0;
+    .timeline-content .timeline-meta {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin: 0.2rem 0 0.4rem;
+    }
+
+    .timeline-content p {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      body { flex-direction: column; }
+
+      .sidebar {
+        width: 100%;
+        min-height: auto;
+        position: static;
+      }
+
+      .main { padding: 1.5rem; }
+
+      .stats { grid-template-columns: repeat(2, 1fr); }
     }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h1>Eyosiyas</h1>
-    <p>Site coming soon.</p>
-    <div class="links">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div>
+      <div class="avatar">E</div>
+      <div class="sidebar-name">Eyosiyas</div>
+      <div class="sidebar-title">Software Developer</div>
+    </div>
+
+    <hr class="sidebar-divider" />
+
+    <table class="info-table">
+      <tr><td>Location</td><td>Oslo, Norway</td></tr>
+      <tr><td>Degree</td><td>Bachelor's</td></tr>
+      <tr><td>Email</td><td>Available on request</td></tr>
+      <tr><td>Status</td><td>Open to work</td></tr>
+    </table>
+
+    <hr class="sidebar-divider" />
+
+    <div>
+      <div class="skills-label">Skills</div>
+      <div class="skill-bar">
+        <div class="skill-bar-top"><span>Python</span><span>85%</span></div>
+        <div class="skill-bar-track"><div class="skill-bar-fill" style="width:85%"></div></div>
+      </div>
+      <div class="skill-bar">
+        <div class="skill-bar-top"><span>SQL</span><span>80%</span></div>
+        <div class="skill-bar-track"><div class="skill-bar-fill" style="width:80%"></div></div>
+      </div>
+      <div class="skill-bar">
+        <div class="skill-bar-top"><span>HTML / CSS</span><span>60%</span></div>
+        <div class="skill-bar-track"><div class="skill-bar-fill" style="width:60%"></div></div>
+      </div>
+      <div class="skill-bar">
+        <div class="skill-bar-top"><span>Git</span><span>70%</span></div>
+        <div class="skill-bar-track"><div class="skill-bar-fill" style="width:70%"></div></div>
+      </div>
+    </div>
+
+    <hr class="sidebar-divider" />
+
+    <div class="social-links">
+      <a href="https://github.com/EyosiyasBT">GitHub</a>
       <a href="https://github.com/EyosiyasBT/ShowCase">ShowCase</a>
     </div>
-  </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-greeting">Hello, I'm</div>
+      <h1>Eyosiyas<br /><span>Software Developer</span></h1>
+      <p class="hero-sub">
+        Placeholder bio — passionate about building clean, reliable software.
+        Background in Python and SQL, currently expanding into web development.
+      </p>
+      <a href="https://github.com/EyosiyasBT/ShowCase" class="hero-cta">View ShowCase</a>
+    </section>
+
+    <!-- Stats -->
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-number">3+</div>
+        <div class="stat-label">Years Coding</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">10+</div>
+        <div class="stat-label">Projects</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">2</div>
+        <div class="stat-label">Languages</div>
+      </div>
+    </div>
+
+    <!-- Projects -->
+    <section class="section">
+      <div class="section-title">Projects</div>
+      <div class="projects-grid">
+        <a href="https://github.com/EyosiyasBT/ShowCase" class="project-card">
+          <h3>ShowCase</h3>
+          <p>A curated collection of projects and experiments.</p>
+          <span class="project-tag">Python</span>
+          <span class="project-tag">GitHub</span>
+        </a>
+        <div class="project-card">
+          <h3>Project Placeholder</h3>
+          <p>Description of a project goes here. Replace with real content.</p>
+          <span class="project-tag">SQL</span>
+        </div>
+        <div class="project-card">
+          <h3>Project Placeholder</h3>
+          <p>Description of a project goes here. Replace with real content.</p>
+          <span class="project-tag">Python</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Experience -->
+    <section class="section">
+      <div class="section-title">Experience</div>
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <h3>Role Placeholder</h3>
+          <div class="timeline-meta">Company · 2024 – Present</div>
+          <p>Short description of responsibilities and achievements.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <h3>Role Placeholder</h3>
+          <div class="timeline-meta">Company · 2022 – 2024</div>
+          <p>Short description of responsibilities and achievements.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
 </body>
 </html>
