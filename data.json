@@ -1,0 +1,56 @@
+{
+  "name": "Eyosiyas",
+  "title": "Software Developer",
+  "location": "Oslo, Norway",
+  "status": "Open to work",
+  "email": "Available on request",
+  "bio": "Placeholder bio — passionate about building clean, reliable software. Background in Python and SQL, currently expanding into web development.",
+  "skills": [
+    { "name": "Python", "level": 85 },
+    { "name": "SQL", "level": 80 },
+    { "name": "HTML / CSS", "level": 60 },
+    { "name": "Git", "level": 70 }
+  ],
+  "stats": [
+    { "value": "3+", "label": "Years Coding" },
+    { "value": "10+", "label": "Projects" },
+    { "value": "2", "label": "Languages" }
+  ],
+  "projects": [
+    {
+      "name": "ShowCase",
+      "description": "A curated collection of projects and experiments.",
+      "url": "https://github.com/EyosiyasBT/ShowCase",
+      "tags": ["Python", "GitHub"]
+    },
+    {
+      "name": "Project Placeholder",
+      "description": "Description of a project goes here. Replace with real content.",
+      "url": null,
+      "tags": ["SQL"]
+    },
+    {
+      "name": "Project Placeholder",
+      "description": "Description of a project goes here. Replace with real content.",
+      "url": null,
+      "tags": ["Python"]
+    }
+  ],
+  "experience": [
+    {
+      "role": "Role Placeholder",
+      "company": "Company",
+      "period": "2024 – Present",
+      "description": "Short description of responsibilities and achievements."
+    },
+    {
+      "role": "Role Placeholder",
+      "company": "Company",
+      "period": "2022 – 2024",
+      "description": "Short description of responsibilities and achievements."
+    }
+  ],
+  "links": {
+    "showcase": "https://github.com/EyosiyasBT/ShowCase"
+  }
+}
