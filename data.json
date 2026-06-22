@@ -6,17 +6,54 @@
   "email": null,
   "bio": "I am a problem solver at heart who explores the field of Artificial Intelligence, Machine Learning and general automation using programming. What I lack in experience I make up in the willingness to learn and great energy :D",
   "skills": [
-    { "name": "SQL", "level": 90 },
-    { "name": "SAS Data Integration Studio", "level": 85 },
-    { "name": "SAS (Software)", "level": 80 },
-    { "name": "Python", "level": 75 }
+    { "name": "SQL", "category": "Data Engineering", "level": null },
+    { "name": "SAS Data Integration Studio", "category": "Data Engineering", "level": null },
+    { "name": "SAS (Software)", "category": "Data Engineering", "level": null },
+    { "name": "SAS Visual Analytics", "category": "Data Engineering", "level": null },
+    { "name": "Azure Data Factory", "category": "Data Engineering", "level": null },
+    { "name": "Snowflake", "category": "Data Engineering", "level": null },
+    { "name": "Databricks", "category": "Data Engineering", "level": null },
+    { "name": "Azure Databricks", "category": "Data Engineering", "level": null },
+    { "name": "PySpark", "category": "Data Engineering", "level": null },
+    { "name": "Delta Lake", "category": "Data Engineering", "level": null },
+    { "name": "ETL", "category": "Data Engineering", "level": null },
+    { "name": "PostgreSQL", "category": "Data Engineering", "level": null },
+    { "name": "Microsoft Azure", "category": "Cloud", "level": null },
+    { "name": "Azure Blob Storage", "category": "Cloud", "level": null },
+    { "name": "Python", "category": "Programming", "level": null },
+    { "name": "Pandas", "category": "Programming", "level": null },
+    { "name": "Scikit-Learn", "category": "Programming", "level": null },
+    { "name": "TensorFlow", "category": "Programming", "level": null },
+    { "name": "Bash", "category": "Programming", "level": null },
+    { "name": "Regular Expressions", "category": "Programming", "level": null },
+    { "name": "C", "category": "Programming", "level": null },
+    { "name": "Java", "category": "Programming", "level": null },
+    { "name": "Machine Learning", "category": "Data Science", "level": null },
+    { "name": "Artificial Intelligence (AI)", "category": "Data Science", "level": null },
+    { "name": "Reinforcement Learning", "category": "Data Science", "level": null },
+    { "name": "Data Science", "category": "Data Science", "level": null },
+    { "name": "Data Analysis", "category": "Data Science", "level": null },
+    { "name": "Data Visualization", "category": "Data Science", "level": null },
+    { "name": "GitHub", "category": "Tools", "level": null },
+    { "name": "Jira", "category": "Tools", "level": null },
+    { "name": "Confluence", "category": "Tools", "level": null },
+    { "name": "DBeaver", "category": "Tools", "level": null },
+    { "name": "Miro", "category": "Tools", "level": null },
+    { "name": "Scrum", "category": "Tools", "level": null },
+    { "name": "Agile Project Management", "category": "Tools", "level": null },
+    { "name": "Mechatronics", "category": "Other", "level": null },
+    { "name": "Robotics", "category": "Other", "level": null },
+    { "name": "Problem Solving", "category": "Other", "level": null },
+    { "name": "Norwegian", "category": "Languages", "level": null },
+    { "name": "English", "category": "Languages", "level": null }
   ],
   "certifications": [
-    "Microsoft Certified: Azure AI Fundamentals (AI-900)",
-    "Microsoft Certified: Azure Fundamentals (AZ-900)",
-    "Microsoft Certified: Azure Data Fundamentals (DP-900)",
-    "Data Analysis and Reporting in SAS Visual Analytics",
-    "Sustainability Globe: Awareness Module"
+    { "name": "Databricks Certified Data Engineer Associate", "issuer": "Databricks", "date": "Jun 2026" },
+    { "name": "DP-900: Azure Data Fundamentals", "issuer": "Microsoft", "date": "Apr 2024" },
+    { "name": "AI-900: Azure AI Fundamentals", "issuer": "Microsoft", "date": "Apr 2024" },
+    { "name": "Data Analysis and Reporting in SAS Visual Analytics", "issuer": "Coursera", "date": "Mar 2024" },
+    { "name": "AZ-900: Microsoft Azure Fundamentals", "issuer": "Microsoft", "date": "Dec 2023" },
+    { "name": "Sustainability Globe: Awareness Module", "issuer": "Sustainability Globe", "date": null }
   ],
   "stats": [
     { "value": "3+", "label": "Years Experience" },
@@ -36,31 +73,29 @@
       "role": "Data Engineer",
       "company": "Knowit",
       "period": "May 2026 – Present",
-      "description": "Data engineering at Knowit, Oslo."
+      "description": "Data engineering on modern cloud-based data platforms.",
+      "tags": ["Azure Data Factory", "Snowflake", "Python", "SQL"]
     },
     {
-      "role": "Insights & Data: Data Engineer",
+      "role": "Data Engineer",
       "company": "Capgemini",
       "period": "Aug 2023 – May 2026",
-      "description": "Data engineering within the Insights & Data practice, Oslo."
+      "description": "Large-scale migration from legacy on-prem SAS to a modern cloud architecture (SAS Viya, Snowflake, Azure). Built automated monitoring tools and dashboards covering 500+ critical tables using Azure Data Factory, Azure Monitor Logs, and Snowflake. Developed ETL pipelines, API integrations, Delta Lake processing in Databricks, and custom Python scripts for data transformation. Handled incident management for business-critical reporting systems.",
+      "tags": ["SAS Viya", "Snowflake", "Azure Data Factory", "Databricks", "Python", "SQL", "Delta Lake", "ETL"]
     },
     {
-      "role": "Insights & Data: Data Engineer (Internship)",
+      "role": "Data Engineer & Data Analyst (Internship)",
       "company": "Capgemini",
       "period": "Jun 2022 – Jul 2022",
-      "description": "Summer internship in data engineering, Oslo."
+      "description": "Built ETL pipelines and transferred data between databases. Performed data analysis and visualization against specified KPIs, and identified new relevant KPIs. Developed a machine learning prototype using time-series forecasting. Stack: PostgreSQL, Python, Miro.",
+      "tags": ["PostgreSQL", "Python", "ETL", "Machine Learning", "Data Analysis"]
     },
     {
       "role": "Teaching Assistant — IN3110, IN1080, IN1020",
       "company": "University of Oslo (UiO)",
       "period": "Jul 2020 – Dec 2021",
-      "description": "Teaching assistant across three courses: high-level programming (IN3110), mechatronics (IN1080), and introduction to computer technology (IN1020)."
-    },
-    {
-      "role": "Grocery Cashier",
-      "company": "Coop Mega",
-      "period": "Dec 2019 – Apr 2020",
-      "description": "Customer service and cashier duties."
+      "description": "Teaching assistant across three courses: high-level programming (Python, Bash, Regex), mechatronics, and introduction to computer technology.",
+      "tags": ["Python", "Bash", "Teaching"]
     }
   ],
   "education": [
@@ -76,6 +111,10 @@
       "school": "University of Oslo (UiO)",
       "period": "Aug 2018 – Jun 2021"
     }
+  ],
+  "languages": [
+    { "name": "Norwegian", "level": "Native" },
+    { "name": "English", "level": "Fluent" }
   ],
   "links": {
     "showcase": "https://github.com/EyosiyasBT/ShowCase",

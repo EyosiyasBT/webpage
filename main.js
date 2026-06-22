@@ -22,6 +22,9 @@ function fetchGithubStats() {
 function renderSidebar(d) {
   const s = document.getElementById('sidebar-data');
   if (!s) return;
+
+  const ratedSkills = d.skills.filter(sk => sk.level !== null).slice(0, 5);
+
   s.innerHTML = `
     <div class="avatar">${d.name[0]}</div>
     <div class="sidebar-name">${d.name}</div>
@@ -33,12 +36,12 @@ function renderSidebar(d) {
       ${d.email ? `<tr><td>Email</td><td>${d.email}</td></tr>` : ''}
     </table>
     <hr class="sidebar-divider" />
-    ${d.skills.length ? `
+    ${ratedSkills.length ? `
       <div class="skills-label">Top Skills</div>
-      ${d.skills.map(sk => `
+      ${ratedSkills.map(sk => `
         <div class="skill-bar">
-          <div class="skill-bar-top"><span>${sk.name}</span><span>${sk.level}%</span></div>
-          <div class="skill-bar-track"><div class="skill-bar-fill" style="width:${sk.level}%"></div></div>
+          <div class="skill-bar-top"><span>${sk.name}</span><span>${sk.level}/5</span></div>
+          <div class="skill-bar-track"><div class="skill-bar-fill" style="width:${sk.level * 20}%"></div></div>
         </div>`).join('')}
       <hr class="sidebar-divider" />
     ` : ''}
@@ -62,10 +65,10 @@ function renderHome(d) {
     if (s.github) value = `<span data-github>...</span>`;
     if (s.skills) value = d.skills.length || '...';
     return `
-    <div class="stat-card">
-      <div class="stat-number">${value}</div>
-      <div class="stat-label">${s.label}</div>
-    </div>`;
+      <div class="stat-card">
+        <div class="stat-number">${value}</div>
+        <div class="stat-label">${s.label}</div>
+      </div>`;
   }).join('');
 
   renderProjectCards(d.projects, document.getElementById('projects-preview'), 3);
@@ -89,15 +92,19 @@ function renderProjectCards(projects, container, limit) {
 function renderExperience(d) {
   const expEl = document.getElementById('experience-list');
   if (expEl) {
-    expEl.innerHTML = d.experience.map(e => `
-      <div class="timeline-item">
-        <div class="timeline-dot"></div>
-        <div class="timeline-content">
-          <h3>${e.role}</h3>
-          <div class="timeline-meta">${e.company} · ${e.period}</div>
-          <p>${e.description}</p>
-        </div>
-      </div>`).join('');
+    expEl.innerHTML = d.experience.map(e => {
+      const tags = e.tags ? e.tags.map(t => `<span class="project-tag">${t}</span>`).join('') : '';
+      return `
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <h3>${e.role}</h3>
+            <div class="timeline-meta">${e.company} · ${e.period}</div>
+            <p>${e.description}</p>
+            ${tags ? `<div class="timeline-tags">${tags}</div>` : ''}
+          </div>
+        </div>`;
+    }).join('');
   }
 
   const eduEl = document.getElementById('education-list');
@@ -116,6 +123,18 @@ function renderExperience(d) {
   const certEl = document.getElementById('certifications-list');
   if (certEl) {
     certEl.innerHTML = d.certifications.map(c => `
-      <div class="cert-item">${c}</div>`).join('');
+      <div class="cert-item">
+        <span class="cert-name">${c.name}</span>
+        <span class="cert-meta">${c.issuer}${c.date ? ' · ' + c.date : ''}</span>
+      </div>`).join('');
+  }
+
+  const langEl = document.getElementById('languages-list');
+  if (langEl) {
+    langEl.innerHTML = d.languages.map(l => `
+      <div class="cert-item">
+        <span class="cert-name">${l.name}</span>
+        <span class="cert-meta">${l.level}</span>
+      </div>`).join('');
   }
 }
