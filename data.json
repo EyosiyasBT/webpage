@@ -9,7 +9,7 @@
   "stats": [
     { "value": "3+", "label": "Years Coding" },
     { "value": "10+", "label": "Projects" },
-    { "value": "2", "label": "Languages" }
+    { "value": "...", "label": "Public Repos", "github": true }
   ],
   "projects": [
     {

@@ -4,7 +4,19 @@ fetch('/data.json')
     renderSidebar(d);
     if (document.getElementById('hero')) renderHome(d);
     if (document.getElementById('projects-grid')) renderProjects(d);
+    if (d.stats.some(s => s.github)) fetchGithubStats();
   });
+
+function fetchGithubStats() {
+  fetch('https://api.github.com/users/EyosiyasBT')
+    .then(r => r.json())
+    .then(gh => {
+      document.querySelectorAll('[data-github]').forEach(el => {
+        el.textContent = gh.public_repos;
+      });
+    })
+    .catch(() => {});
+}
 
 function renderSidebar(d) {
   const s = document.getElementById('sidebar-data');
@@ -20,13 +32,15 @@ function renderSidebar(d) {
       <tr><td>Email</td><td>${d.email}</td></tr>
     </table>
     <hr class="sidebar-divider" />
-    <div class="skills-label">Skills</div>
-    ${d.skills.map(s => `
-      <div class="skill-bar">
-        <div class="skill-bar-top"><span>${s.name}</span><span>${s.level}%</span></div>
-        <div class="skill-bar-track"><div class="skill-bar-fill" style="width:${s.level}%"></div></div>
-      </div>`).join('')}
-    <hr class="sidebar-divider" />
+    ${d.skills.length ? `
+      <div class="skills-label">Skills</div>
+      ${d.skills.map(sk => `
+        <div class="skill-bar">
+          <div class="skill-bar-top"><span>${sk.name}</span><span>${sk.level}%</span></div>
+          <div class="skill-bar-track"><div class="skill-bar-fill" style="width:${sk.level}%"></div></div>
+        </div>`).join('')}
+      <hr class="sidebar-divider" />
+    ` : ''}
     <div class="social-links">
       <a href="${d.links.showcase}">ShowCase</a>
     </div>
@@ -43,7 +57,7 @@ function renderHome(d) {
 
   document.getElementById('stats').innerHTML = d.stats.map(s => `
     <div class="stat-card">
-      <div class="stat-number">${s.value}</div>
+      <div class="stat-number">${s.github ? `<span data-github>...</span>` : s.value}</div>
       <div class="stat-label">${s.label}</div>
     </div>`).join('');
 
