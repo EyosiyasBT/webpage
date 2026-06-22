@@ -107,6 +107,12 @@ body {
   border-radius: 2px;
 }
 
+.skill-bar-fill.level-1 { width: 20%; }
+.skill-bar-fill.level-2 { width: 40%; }
+.skill-bar-fill.level-3 { width: 60%; }
+.skill-bar-fill.level-4 { width: 80%; }
+.skill-bar-fill.level-5 { width: 100%; }
+
 .social-links {
   display: flex;
   gap: 0.75rem;

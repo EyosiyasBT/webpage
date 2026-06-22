@@ -24,7 +24,8 @@ function renderSidebar(d) {
   const s = document.getElementById('sidebar-data');
   if (!s) return;
 
-  const ratedSkills = d.skills.filter(sk => sk.level !== null).slice(0, 5);
+  const sidebarSkillNames = ['Problem Solving', 'Python', 'SQL', 'Data Engineering', 'Data Science'];
+  const sidebarSkills = sidebarSkillNames.map(n => d.skills.find(sk => sk.name === n)).filter(Boolean);
 
   s.innerHTML = `
     <div class="avatar">${d.name[0]}</div>
@@ -37,12 +38,12 @@ function renderSidebar(d) {
       ${d.email ? `<tr><td>Email</td><td>${d.email}</td></tr>` : ''}
     </table>
     <hr class="sidebar-divider" />
-    ${ratedSkills.length ? `
+    ${sidebarSkills.length ? `
       <div class="skills-label">Top Skills</div>
-      ${ratedSkills.map(sk => `
+      ${sidebarSkills.map(sk => `
         <div class="skill-bar">
           <div class="skill-bar-top"><span>${sk.name}</span><span>${sk.level}/5</span></div>
-          <div class="skill-bar-track"><div class="skill-bar-fill" style="width:${sk.level * 20}%"></div></div>
+          <div class="skill-bar-track"><div class="skill-bar-fill level-${sk.level}"></div></div>
         </div>`).join('')}
       <hr class="sidebar-divider" />
     ` : ''}
@@ -92,10 +93,11 @@ function renderProjectCards(projects, container, limit) {
 
 function renderSkillsPage(d) {
   const categories = [...new Set(d.skills.map(s => s.category))];
-  const labels = { 1: 'Attempted', 2: 'Learning', 3: 'Comfortable', 4: 'Advanced', 5: 'Mastered' };
+  const labels = { 1: 'Exposed', 2: 'Developing', 3: 'Comfortable', 4: 'Proficient', 5: 'Mastered' };
 
   document.getElementById('skills-page').innerHTML = categories.map(cat => {
-    const catSkills = d.skills.filter(s => s.category === cat);
+    const catSkills = [...d.skills.filter(s => s.category === cat)]
+      .sort((a, b) => b.level - a.level);
     return `
       <section class="section">
         <div class="section-title">${cat}</div>
@@ -107,7 +109,7 @@ function renderSkillsPage(d) {
                 <span class="skill-card-label">${labels[s.level] || ''}</span>
               </div>
               <div class="skill-bar-track">
-                <div class="skill-bar-fill" style="width:${s.level * 20}%"></div>
+                <div class="skill-bar-fill level-${s.level}"></div>
               </div>
             </div>`).join('')}
         </div>
