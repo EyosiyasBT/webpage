@@ -1,0 +1,4 @@
+Contact: mailto:eyosiyasbt@gmail.com
+Expires: 2027-06-22T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://eyosiyas.com/.well-known/security.txt
