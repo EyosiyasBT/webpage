@@ -1,0 +1,76 @@
+fetch('/data.json')
+  .then(r => r.json())
+  .then(d => {
+    renderSidebar(d);
+    if (document.getElementById('hero')) renderHome(d);
+    if (document.getElementById('projects-grid')) renderProjects(d);
+  });
+
+function renderSidebar(d) {
+  const s = document.getElementById('sidebar-data');
+  if (!s) return;
+  s.innerHTML = `
+    <div class="avatar">${d.name[0]}</div>
+    <div class="sidebar-name">${d.name}</div>
+    <div class="sidebar-title">${d.title}</div>
+    <hr class="sidebar-divider" />
+    <table class="info-table">
+      <tr><td>Location</td><td>${d.location}</td></tr>
+      <tr><td>Status</td><td>${d.status}</td></tr>
+      <tr><td>Email</td><td>${d.email}</td></tr>
+    </table>
+    <hr class="sidebar-divider" />
+    <div class="skills-label">Skills</div>
+    ${d.skills.map(s => `
+      <div class="skill-bar">
+        <div class="skill-bar-top"><span>${s.name}</span><span>${s.level}%</span></div>
+        <div class="skill-bar-track"><div class="skill-bar-fill" style="width:${s.level}%"></div></div>
+      </div>`).join('')}
+    <hr class="sidebar-divider" />
+    <div class="social-links">
+      <a href="${d.links.showcase}">ShowCase</a>
+    </div>
+  `;
+}
+
+function renderHome(d) {
+  document.getElementById('hero').innerHTML = `
+    <div class="hero-greeting">Hello, I'm</div>
+    <h1>${d.name}<br /><span>${d.title}</span></h1>
+    <p class="hero-sub">${d.bio}</p>
+    <a href="${d.links.showcase}" class="hero-cta">View ShowCase</a>
+  `;
+
+  document.getElementById('stats').innerHTML = d.stats.map(s => `
+    <div class="stat-card">
+      <div class="stat-number">${s.value}</div>
+      <div class="stat-label">${s.label}</div>
+    </div>`).join('');
+
+  document.getElementById('experience-list').innerHTML = d.experience.map(e => `
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-content">
+        <h3>${e.role}</h3>
+        <div class="timeline-meta">${e.company} · ${e.period}</div>
+        <p>${e.description}</p>
+      </div>
+    </div>`).join('');
+
+  renderProjectCards(d.projects, document.getElementById('projects-preview'), 3);
+}
+
+function renderProjects(d) {
+  renderProjectCards(d.projects, document.getElementById('projects-grid'), d.projects.length);
+}
+
+function renderProjectCards(projects, container, limit) {
+  if (!container) return;
+  container.innerHTML = projects.slice(0, limit).map(p => {
+    const tags = p.tags.map(t => `<span class="project-tag">${t}</span>`).join('');
+    const inner = `<h3>${p.name}</h3><p>${p.description}</p>${tags}`;
+    return p.url
+      ? `<a href="${p.url}" class="project-card">${inner}</a>`
+      : `<div class="project-card">${inner}</div>`;
+  }).join('');
+}
