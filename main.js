@@ -57,11 +57,16 @@ function renderHome(d) {
     <a href="${d.links.showcase}" class="hero-cta">View ShowCase</a>
   `;
 
-  document.getElementById('stats').innerHTML = d.stats.map(s => `
+  document.getElementById('stats').innerHTML = d.stats.map(s => {
+    let value = s.value;
+    if (s.github) value = `<span data-github>...</span>`;
+    if (s.skills) value = d.skills.length || '...';
+    return `
     <div class="stat-card">
-      <div class="stat-number">${s.github ? `<span data-github>...</span>` : s.value}</div>
+      <div class="stat-number">${value}</div>
       <div class="stat-label">${s.label}</div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 
   renderProjectCards(d.projects, document.getElementById('projects-preview'), 3);
 }

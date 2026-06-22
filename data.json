@@ -20,7 +20,7 @@
   ],
   "stats": [
     { "value": "3+", "label": "Years Experience" },
-    { "value": "2", "label": "Degrees" },
+    { "value": "...", "label": "Skills", "skills": true },
     { "value": "...", "label": "Public Repos", "github": true }
   ],
   "projects": [
