@@ -1,16 +1,11 @@
 {
   "name": "Eyosiyas",
-  "title": "Software Developer",
+  "title": "Problem Solver",
   "location": "Oslo, Norway",
-  "status": "Open to work",
+  "status": "Chilling",
   "email": "Available on request",
   "bio": "Placeholder bio — passionate about building clean, reliable software. Background in Python and SQL, currently expanding into web development.",
-  "skills": [
-    { "name": "Python", "level": 85 },
-    { "name": "SQL", "level": 80 },
-    { "name": "HTML / CSS", "level": 60 },
-    { "name": "Git", "level": 70 }
-  ],
+  "skills": [],
   "stats": [
     { "value": "3+", "label": "Years Coding" },
     { "value": "10+", "label": "Projects" },
