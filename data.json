@@ -73,16 +73,30 @@
       "name": "PokR",
       "type": "showcase",
       "description": "A real-time poker odds assistant that uses YOLO-based computer vision to detect playing cards from a webcam or screen capture, then automatically populates a poker odds calculator. Trained on a custom dataset across multiple YOLO model variants.",
-      "url": "https://github.com/EyosiyasBT/ShowCase/tree/main/Pokr",
+      "url": "https://github.com/EyosiyasBT/ShowCase/tree/main/PokR",
       "image": "https://raw.githubusercontent.com/EyosiyasBT/ShowCase/main/INIT_GITHUB/PokR/Image_real_combined.png",
       "tags": ["Python", "YOLO", "Computer Vision", "OpenCV", "Machine Learning", "Selenium"]
     },
     {
-      "name": "ShowCase",
+      "name": "Accountability Module",
       "type": "showcase",
-      "description": "A curated collection of projects and experiments.",
-      "url": "https://github.com/EyosiyasBT/ShowCase",
-      "tags": ["Python", "GitHub"]
+      "description": "MSc thesis: an external explainability module for reinforcement learning agents. Built to answer why an autonomous vehicle crashed — using saliency maps, evolutionary algorithms, and UMAP counterfactuals to make black-box AI decisions transparent and auditable.",
+      "url": "https://github.com/EyosiyasBT/ShowCase/tree/main/Master",
+      "tags": ["Python", "Reinforcement Learning", "Explainable AI", "PyTorch", "UMAP", "highway-env"]
+    },
+    {
+      "name": "SpotR",
+      "type": "showcase",
+      "description": "A mobile workout tracker built for the gym. Log exercises, track sets and reps, visualise progress over time with charts. Built with React Native and local SQLite storage — no account needed. Currently in development, heading to the app stores.",
+      "url": null,
+      "tags": ["React Native", "TypeScript", "Expo", "SQLite", "Mobile"]
+    },
+    {
+      "name": "GrocR",
+      "type": "showcase",
+      "description": "A Norwegian grocery price comparison app. A Python scraper pulls live product data (prices, nutrition, images) from grocery stores, feeding a React Native app with barcode scanning and category browsing. Project on pause — planned revival.",
+      "url": null,
+      "tags": ["React Native", "Python", "SQLite", "Barcode Scanner", "Web Scraping"]
     }
   ],
   "experience": [
