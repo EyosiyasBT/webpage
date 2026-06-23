@@ -1,56 +1,140 @@
 {
-  "name": "Eyosiyas",
-  "title": "Software Developer",
+  "name": "Eyosiyas Taye",
+  "title": "Problem Solver & Data Engineer",
   "location": "Oslo, Norway",
-  "status": "Open to work",
-  "email": "Available on request",
-  "bio": "Placeholder bio — passionate about building clean, reliable software. Background in Python and SQL, currently expanding into web development.",
+  "status": "Chilling",
+  "email": null,
+  "bio": "I am a problem solver at heart who explores the field of Artificial Intelligence, Machine Learning and general automation using programming. What I lack in experience I make up in the willingness to learn and great energy :D",
   "skills": [
-    { "name": "Python", "level": 85 },
-    { "name": "SQL", "level": 80 },
-    { "name": "HTML / CSS", "level": 60 },
-    { "name": "Git", "level": 70 }
+    { "name": "SQL", "category": "Data Engineering", "level": 3 },
+    { "name": "SAS Data Integration Studio", "category": "Data Engineering", "level": 2 },
+    { "name": "SAS 9.4", "category": "Data Engineering", "level": 1 },
+    { "name": "SAS Visual Analytics", "category": "Data Engineering", "level": 3 },
+    { "name": "Azure Data Factory", "category": "Data Engineering", "level": 3 },
+    { "name": "Azure Data Lake", "category": "Data Engineering", "level": 2 },
+    { "name": "Azure Monitor", "category": "Data Engineering", "level": 1 },
+    { "name": "Snowflake", "category": "Data Engineering", "level": 3 },
+    { "name": "Databricks", "category": "Data Engineering", "level": 2 },
+    { "name": "PySpark", "category": "Data Engineering", "level": 1 },
+    { "name": "Delta Lake", "category": "Data Engineering", "level": 1 },
+    { "name": "ETL", "category": "Data Engineering", "level": 3 },
+    { "name": "PostgreSQL", "category": "Data Engineering", "level": 1 },
+    { "name": "JSON", "category": "Data Engineering", "level": 2 },
+    { "name": "API Integration", "category": "Data Engineering", "level": 2 },
+    { "name": "FISHTALK", "category": "Data Engineering", "level": 1 },
+    { "name": "Microsoft Azure", "category": "Cloud", "level": 2 },
+    { "name": "Azure Blob Storage", "category": "Cloud", "level": 2 },
+    { "name": "Azure Data Explorer", "category": "Cloud", "level": 1 },
+    { "name": "Azure DevOps (CI/CD)", "category": "Cloud", "level": 2 },
+    { "name": "Python", "category": "Programming", "level": 4 },
+    { "name": "Pandas", "category": "Programming", "level": 3 },
+    { "name": "Scikit-Learn", "category": "Programming", "level": 2 },
+    { "name": "TensorFlow", "category": "Programming", "level": 2 },
+    { "name": "Bash", "category": "Programming", "level": 2 },
+    { "name": "Regular Expressions", "category": "Programming", "level": 3 },
+    { "name": "C", "category": "Programming", "level": 1 },
+    { "name": "Java", "category": "Programming", "level": 2 },
+    { "name": "Machine Learning", "category": "Data Science", "level": 2 },
+    { "name": "Artificial Intelligence (AI)", "category": "Data Science", "level": 2 },
+    { "name": "Reinforcement Learning", "category": "Data Science", "level": 2 },
+    { "name": "Data Science", "category": "Data Science", "level": 2 },
+    { "name": "Data Analysis", "category": "Data Science", "level": 2 },
+    { "name": "Data Visualization", "category": "Data Science", "level": 2 },
+    { "name": "GitHub", "category": "Tools", "level": 3 },
+    { "name": "Jira", "category": "Tools", "level": 3 },
+    { "name": "Confluence", "category": "Tools", "level": 3 },
+    { "name": "DBeaver", "category": "Tools", "level": 1 },
+    { "name": "Miro", "category": "Tools", "level": 2 },
+    { "name": "Scrum", "category": "Tools", "level": 3 },
+    { "name": "Agile Project Management", "category": "Tools", "level": 1 },
+    { "name": "Lift & Shift", "category": "Methodology", "level": 3 },
+    { "name": "Cloud Migration", "category": "Methodology", "level": 2 },
+    { "name": "Incident Management", "category": "Methodology", "level": 2 },
+    { "name": "Data Engineering", "category": "Methodology", "level": 3 },
+    { "name": "Mechatronics", "category": "Other", "level": 2 },
+    { "name": "Robotics", "category": "Other", "level": 1 },
+    { "name": "Problem Solving", "category": "Other", "level": 4 }
+  ],
+  "certifications": [
+    { "name": "Databricks Certified Data Engineer Associate", "issuer": "Databricks", "date": "Jun 2026" },
+    { "name": "DP-900: Azure Data Fundamentals", "issuer": "Microsoft", "date": "Apr 2024" },
+    { "name": "AI-900: Azure AI Fundamentals", "issuer": "Microsoft", "date": "Apr 2024" },
+    { "name": "Data Analysis and Reporting in SAS Visual Analytics", "issuer": "Coursera", "date": "Mar 2024" },
+    { "name": "AZ-900: Microsoft Azure Fundamentals", "issuer": "Microsoft", "date": "Dec 2023" },
+    { "name": "Sustainability Globe: Awareness Module", "issuer": "Sustainability Globe", "date": null }
   ],
   "stats": [
-    { "value": "3+", "label": "Years Coding" },
-    { "value": "10+", "label": "Projects" },
-    { "value": "2", "label": "Languages" }
+    { "value": "3+", "label": "Years Experience" },
+    { "value": "...", "label": "Skills", "skills": true },
+    { "value": "...", "label": "Public Repos", "github": true }
   ],
   "projects": [
     {
+      "name": "PokR",
+      "type": "showcase",
+      "description": "A real-time poker odds assistant that uses YOLO-based computer vision to detect playing cards from a webcam or screen capture, then automatically populates a poker odds calculator. Trained on a custom dataset across multiple YOLO model variants.",
+      "url": "https://github.com/EyosiyasBT/ShowCase/tree/main/Pokr",
+      "image": "https://raw.githubusercontent.com/EyosiyasBT/ShowCase/main/INIT_GITHUB/PokR/Image_real_combined.png",
+      "tags": ["Python", "YOLO", "Computer Vision", "OpenCV", "Machine Learning", "Selenium"]
+    },
+    {
       "name": "ShowCase",
+      "type": "showcase",
       "description": "A curated collection of projects and experiments.",
       "url": "https://github.com/EyosiyasBT/ShowCase",
       "tags": ["Python", "GitHub"]
-    },
-    {
-      "name": "Project Placeholder",
-      "description": "Description of a project goes here. Replace with real content.",
-      "url": null,
-      "tags": ["SQL"]
-    },
-    {
-      "name": "Project Placeholder",
-      "description": "Description of a project goes here. Replace with real content.",
-      "url": null,
-      "tags": ["Python"]
     }
   ],
   "experience": [
     {
-      "role": "Role Placeholder",
-      "company": "Company",
-      "period": "2024 – Present",
-      "description": "Short description of responsibilities and achievements."
+      "role": "Data Engineer",
+      "company": "Knowit",
+      "period": "May 2026 – Present",
+      "description": "Data engineering on modern cloud-based data platforms.",
+      "tags": ["Azure Data Factory", "Snowflake", "Python", "SQL"]
     },
     {
-      "role": "Role Placeholder",
-      "company": "Company",
-      "period": "2022 – 2024",
-      "description": "Short description of responsibilities and achievements."
+      "role": "Data Engineer",
+      "company": "Capgemini",
+      "period": "Aug 2023 – May 2026",
+      "description": "Large-scale migration from legacy on-prem SAS to a modern cloud architecture (SAS Viya, Snowflake, Azure). Built automated monitoring tools and dashboards covering 500+ critical tables using Azure Data Factory, Azure Monitor Logs, and Snowflake. Developed ETL pipelines, API integrations, Delta Lake processing in Databricks, and custom Python scripts for data transformation. Handled incident management for business-critical reporting systems.",
+      "tags": ["SAS Viya", "Snowflake", "Azure Data Factory", "Databricks", "Python", "SQL", "Delta Lake", "ETL"]
+    },
+    {
+      "role": "Data Engineer & Data Analyst (Internship)",
+      "company": "Capgemini",
+      "period": "Jun 2022 – Jul 2022",
+      "description": "Built ETL pipelines and transferred data between databases. Performed data analysis and visualization against specified KPIs, and identified new relevant KPIs. Developed a machine learning prototype using time-series forecasting. Stack: PostgreSQL, Python, Miro.",
+      "tags": ["PostgreSQL", "Python", "ETL", "Machine Learning", "Data Analysis"]
+    },
+    {
+      "role": "Teaching Assistant — IN3110, IN1080, IN1020",
+      "company": "University of Oslo (UiO)",
+      "period": "Jul 2020 – Dec 2021",
+      "description": "Teaching assistant across three courses: high-level programming (Python, Bash, Regex), mechatronics, and introduction to computer technology.",
+      "tags": ["Python", "Bash", "Teaching"]
     }
   ],
+  "education": [
+    {
+      "degree": "Master's degree",
+      "field": "Informatics: Robotics and Intelligent Systems",
+      "school": "University of Oslo (UiO)",
+      "period": "Aug 2021 – Jun 2023"
+    },
+    {
+      "degree": "Bachelor's degree",
+      "field": "Informatics: Robotics and Intelligent Systems",
+      "school": "University of Oslo (UiO)",
+      "period": "Aug 2018 – Jun 2021"
+    }
+  ],
+  "languages": [
+    { "name": "Norwegian", "level": "Native" },
+    { "name": "English", "level": "Fluent" }
+  ],
   "links": {
-    "showcase": "https://github.com/EyosiyasBT/ShowCase"
+    "showcase": "https://github.com/EyosiyasBT/ShowCase",
+    "linkedin": "https://www.linkedin.com/in/ebtaye"
   }
 }

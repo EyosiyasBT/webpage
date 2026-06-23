@@ -4,11 +4,29 @@ fetch('/data.json')
     renderSidebar(d);
     if (document.getElementById('hero')) renderHome(d);
     if (document.getElementById('projects-grid')) renderProjects(d);
+    if (document.getElementById('experience-list')) renderExperience(d);
+    if (document.getElementById('skills-page')) renderSkillsPage(d);
+    if (d.stats.some(s => s.github)) fetchGithubStats();
   });
+
+function fetchGithubStats() {
+  fetch('https://api.github.com/users/EyosiyasBT')
+    .then(r => r.json())
+    .then(gh => {
+      document.querySelectorAll('[data-github]').forEach(el => {
+        el.textContent = gh.public_repos;
+      });
+    })
+    .catch(() => {});
+}
 
 function renderSidebar(d) {
   const s = document.getElementById('sidebar-data');
   if (!s) return;
+
+  const sidebarSkillNames = ['Problem Solving', 'Python', 'SQL', 'Data Engineering', 'Data Science'];
+  const sidebarSkills = sidebarSkillNames.map(n => d.skills.find(sk => sk.name === n)).filter(Boolean);
+
   s.innerHTML = `
     <div class="avatar">${d.name[0]}</div>
     <div class="sidebar-name">${d.name}</div>
@@ -17,17 +35,20 @@ function renderSidebar(d) {
     <table class="info-table">
       <tr><td>Location</td><td>${d.location}</td></tr>
       <tr><td>Status</td><td>${d.status}</td></tr>
-      <tr><td>Email</td><td>${d.email}</td></tr>
+      ${d.email ? `<tr><td>Email</td><td>${d.email}</td></tr>` : ''}
     </table>
     <hr class="sidebar-divider" />
-    <div class="skills-label">Skills</div>
-    ${d.skills.map(s => `
-      <div class="skill-bar">
-        <div class="skill-bar-top"><span>${s.name}</span><span>${s.level}%</span></div>
-        <div class="skill-bar-track"><div class="skill-bar-fill" style="width:${s.level}%"></div></div>
-      </div>`).join('')}
-    <hr class="sidebar-divider" />
+    ${sidebarSkills.length ? `
+      <div class="skills-label">Top Skills</div>
+      ${sidebarSkills.map(sk => `
+        <div class="skill-bar">
+          <div class="skill-bar-top"><span>${sk.name}</span><span>${sk.level}/5</span></div>
+          <div class="skill-bar-track"><div class="skill-bar-fill level-${sk.level}"></div></div>
+        </div>`).join('')}
+      <hr class="sidebar-divider" />
+    ` : ''}
     <div class="social-links">
+      <a href="${d.links.linkedin}">LinkedIn</a>
       <a href="${d.links.showcase}">ShowCase</a>
     </div>
   `;
@@ -41,36 +62,129 @@ function renderHome(d) {
     <a href="${d.links.showcase}" class="hero-cta">View ShowCase</a>
   `;
 
-  document.getElementById('stats').innerHTML = d.stats.map(s => `
-    <div class="stat-card">
-      <div class="stat-number">${s.value}</div>
-      <div class="stat-label">${s.label}</div>
-    </div>`).join('');
+  document.getElementById('stats').innerHTML = d.stats.map(s => {
+    let value = s.value;
+    if (s.github) value = `<span data-github>...</span>`;
+    if (s.skills) value = d.skills.length || '...';
+    return `
+      <div class="stat-card">
+        <div class="stat-number">${value}</div>
+        <div class="stat-label">${s.label}</div>
+      </div>`;
+  }).join('');
 
-  document.getElementById('experience-list').innerHTML = d.experience.map(e => `
-    <div class="timeline-item">
-      <div class="timeline-dot"></div>
-      <div class="timeline-content">
-        <h3>${e.role}</h3>
-        <div class="timeline-meta">${e.company} · ${e.period}</div>
-        <p>${e.description}</p>
-      </div>
-    </div>`).join('');
-
-  renderProjectCards(d.projects, document.getElementById('projects-preview'), 3);
+  renderProjectCards(d.projects.slice(0, 3), document.getElementById('projects-preview'), 3);
 }
 
 function renderProjects(d) {
-  renderProjectCards(d.projects, document.getElementById('projects-grid'), d.projects.length);
+  const live = d.projects.filter(p => p.type === 'live');
+  const showcase = d.projects.filter(p => p.type === 'showcase');
+  const container = document.getElementById('projects-grid');
+  if (!container) return;
+
+  container.innerHTML = `
+    ${live.length ? `
+      <div class="projects-section">
+        <div class="projects-section-title">Live Projects</div>
+        <div class="projects-section-sub">Interactive tools you can run directly in the browser</div>
+        <div class="projects-grid-inner" id="live-grid"></div>
+      </div>` : ''}
+    <div class="projects-section">
+      <div class="projects-section-title">Showcase</div>
+      <div class="projects-section-sub">Projects to explore, read about, or run locally</div>
+      <div class="projects-grid-inner" id="showcase-grid"></div>
+    </div>
+  `;
+
+  if (live.length) renderProjectCards(live, document.getElementById('live-grid'), live.length);
+  renderProjectCards(showcase, document.getElementById('showcase-grid'), showcase.length);
 }
 
 function renderProjectCards(projects, container, limit) {
   if (!container) return;
   container.innerHTML = projects.slice(0, limit).map(p => {
-    const tags = p.tags.map(t => `<span class="project-tag">${t}</span>`).join('');
-    const inner = `<h3>${p.name}</h3><p>${p.description}</p>${tags}`;
+    const tags = p.tags ? p.tags.map(t => `<span class="project-tag">${t}</span>`).join('') : '';
+    const badge = p.type === 'live' ? `<span class="project-badge live">Live</span>` : '';
+    const image = p.image ? `<div class="project-image"><img src="${p.image}" alt="${p.name} preview" loading="lazy" /></div>` : '';
+    const inner = `${image}<div class="project-body">${badge}<h3>${p.name}</h3><p>${p.description}</p><div class="project-tags">${tags}</div></div>`;
     return p.url
-      ? `<a href="${p.url}" class="project-card">${inner}</a>`
-      : `<div class="project-card">${inner}</div>`;
+      ? `<a href="${p.url}" class="project-card${p.image ? ' project-card--image' : ''}" target="_blank" rel="noopener">${inner}</a>`
+      : `<div class="project-card${p.image ? ' project-card--image' : ''}">${inner}</div>`;
   }).join('');
+}
+
+function renderSkillsPage(d) {
+  const categories = [...new Set(d.skills.map(s => s.category))];
+  const labels = { 1: 'Exposed', 2: 'Developing', 3: 'Comfortable', 4: 'Proficient', 5: 'Mastered' };
+
+  document.getElementById('skills-page').innerHTML = categories.map(cat => {
+    const catSkills = [...d.skills.filter(s => s.category === cat)]
+      .sort((a, b) => b.level - a.level);
+    return `
+      <section class="section">
+        <div class="section-title">${cat}</div>
+        <div class="skills-grid">
+          ${catSkills.map(s => `
+            <div class="skill-card">
+              <div class="skill-card-top">
+                <span class="skill-card-name">${s.name}</span>
+                <span class="skill-card-label">${labels[s.level] || ''}</span>
+              </div>
+              <div class="skill-bar-track">
+                <div class="skill-bar-fill level-${s.level}"></div>
+              </div>
+            </div>`).join('')}
+        </div>
+      </section>`;
+  }).join('');
+}
+
+function renderExperience(d) {
+  const expEl = document.getElementById('experience-list');
+  if (expEl) {
+    expEl.innerHTML = d.experience.map(e => {
+      const tags = e.tags ? e.tags.map(t => `<span class="project-tag">${t}</span>`).join('') : '';
+      return `
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <h3>${e.role}</h3>
+            <div class="timeline-meta">${e.company} · ${e.period}</div>
+            <p>${e.description}</p>
+            ${tags ? `<div class="timeline-tags">${tags}</div>` : ''}
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  const eduEl = document.getElementById('education-list');
+  if (eduEl) {
+    eduEl.innerHTML = d.education.map(e => `
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <h3>${e.degree}</h3>
+          <div class="timeline-meta">${e.school} · ${e.period}</div>
+          <p>${e.field}</p>
+        </div>
+      </div>`).join('');
+  }
+
+  const certEl = document.getElementById('certifications-list');
+  if (certEl) {
+    certEl.innerHTML = d.certifications.map(c => `
+      <div class="cert-item">
+        <span class="cert-name">${c.name}</span>
+        <span class="cert-meta">${c.issuer}${c.date ? ' · ' + c.date : ''}</span>
+      </div>`).join('');
+  }
+
+  const langEl = document.getElementById('languages-list');
+  if (langEl) {
+    langEl.innerHTML = d.languages.map(l => `
+      <div class="cert-item">
+        <span class="cert-name">${l.name}</span>
+        <span class="cert-meta">${l.level}</span>
+      </div>`).join('');
+  }
 }
