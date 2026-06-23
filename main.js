@@ -73,20 +73,41 @@ function renderHome(d) {
       </div>`;
   }).join('');
 
-  renderProjectCards(d.projects, document.getElementById('projects-preview'), 3);
+  renderProjectCards(d.projects.slice(0, 3), document.getElementById('projects-preview'), 3);
 }
 
 function renderProjects(d) {
-  renderProjectCards(d.projects, document.getElementById('projects-grid'), d.projects.length);
+  const live = d.projects.filter(p => p.type === 'live');
+  const showcase = d.projects.filter(p => p.type === 'showcase');
+  const container = document.getElementById('projects-grid');
+  if (!container) return;
+
+  container.innerHTML = `
+    ${live.length ? `
+      <div class="projects-section">
+        <div class="projects-section-title">Live Projects</div>
+        <div class="projects-section-sub">Interactive tools you can run directly in the browser</div>
+        <div class="projects-grid-inner" id="live-grid"></div>
+      </div>` : ''}
+    <div class="projects-section">
+      <div class="projects-section-title">Showcase</div>
+      <div class="projects-section-sub">Projects to explore, read about, or run locally</div>
+      <div class="projects-grid-inner" id="showcase-grid"></div>
+    </div>
+  `;
+
+  if (live.length) renderProjectCards(live, document.getElementById('live-grid'), live.length);
+  renderProjectCards(showcase, document.getElementById('showcase-grid'), showcase.length);
 }
 
 function renderProjectCards(projects, container, limit) {
   if (!container) return;
   container.innerHTML = projects.slice(0, limit).map(p => {
-    const tags = p.tags.map(t => `<span class="project-tag">${t}</span>`).join('');
-    const inner = `<h3>${p.name}</h3><p>${p.description}</p>${tags}`;
+    const tags = p.tags ? p.tags.map(t => `<span class="project-tag">${t}</span>`).join('') : '';
+    const badge = p.type === 'live' ? `<span class="project-badge live">Live</span>` : '';
+    const inner = `${badge}<h3>${p.name}</h3><p>${p.description}</p>${tags}`;
     return p.url
-      ? `<a href="${p.url}" class="project-card">${inner}</a>`
+      ? `<a href="${p.url}" class="project-card" target="_blank" rel="noopener">${inner}</a>`
       : `<div class="project-card">${inner}</div>`;
   }).join('');
 }
