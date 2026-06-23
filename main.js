@@ -105,10 +105,11 @@ function renderProjectCards(projects, container, limit) {
   container.innerHTML = projects.slice(0, limit).map(p => {
     const tags = p.tags ? p.tags.map(t => `<span class="project-tag">${t}</span>`).join('') : '';
     const badge = p.type === 'live' ? `<span class="project-badge live">Live</span>` : '';
-    const inner = `${badge}<h3>${p.name}</h3><p>${p.description}</p>${tags}`;
+    const image = p.image ? `<div class="project-image"><img src="${p.image}" alt="${p.name} preview" loading="lazy" /></div>` : '';
+    const inner = `${image}<div class="project-body">${badge}<h3>${p.name}</h3><p>${p.description}</p><div class="project-tags">${tags}</div></div>`;
     return p.url
-      ? `<a href="${p.url}" class="project-card" target="_blank" rel="noopener">${inner}</a>`
-      : `<div class="project-card">${inner}</div>`;
+      ? `<a href="${p.url}" class="project-card${p.image ? ' project-card--image' : ''}" target="_blank" rel="noopener">${inner}</a>`
+      : `<div class="project-card${p.image ? ' project-card--image' : ''}">${inner}</div>`;
   }).join('');
 }
 

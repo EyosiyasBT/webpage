@@ -74,6 +74,7 @@
       "type": "showcase",
       "description": "A real-time poker odds assistant that uses YOLO-based computer vision to detect playing cards from a webcam or screen capture, then automatically populates a poker odds calculator. Trained on a custom dataset across multiple YOLO model variants.",
       "url": "https://github.com/EyosiyasBT/ShowCase/tree/main/Pokr",
+      "image": "https://raw.githubusercontent.com/EyosiyasBT/ShowCase/main/INIT_GITHUB/PokR/Image_real_combined.png",
       "tags": ["Python", "YOLO", "Computer Vision", "OpenCV", "Machine Learning", "Selenium"]
     },
     {
