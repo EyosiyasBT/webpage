@@ -102,15 +102,61 @@ function renderProjects(d) {
 
 function renderProjectCards(projects, container, limit) {
   if (!container) return;
-  container.innerHTML = projects.slice(0, limit).map(p => {
+  container.innerHTML = projects.slice(0, limit).map((p, i) => {
     const tags = p.tags ? p.tags.map(t => `<span class="project-tag">${t}</span>`).join('') : '';
     const badge = p.type === 'live' ? `<span class="project-badge live">Live</span>` : '';
     const image = p.image ? `<div class="project-image"><img src="${p.image}" alt="${p.name} preview" loading="lazy" /></div>` : '';
     const inner = `${image}<div class="project-body">${badge}<h3>${p.name}</h3><p>${p.description}</p><div class="project-tags">${tags}</div></div>`;
+    if (p.detail) {
+      return `<div class="project-card${p.image ? ' project-card--image' : ''}" style="cursor:pointer" data-detail-index="${i}">${inner}</div>`;
+    }
     return p.url
       ? `<a href="${p.url}" class="project-card${p.image ? ' project-card--image' : ''}" target="_blank" rel="noopener">${inner}</a>`
       : `<div class="project-card${p.image ? ' project-card--image' : ''}">${inner}</div>`;
   }).join('');
+
+  container.querySelectorAll('[data-detail-index]').forEach(el => {
+    el.addEventListener('click', () => openProjectModal(projects[parseInt(el.dataset.detailIndex)]));
+  });
+}
+
+function openProjectModal(p) {
+  const overlay = document.getElementById('project-modal');
+  const content = document.getElementById('project-modal-content');
+  if (!overlay || !content) return;
+
+  const images = p.detail.images ? p.detail.images.map(img => `
+    <figure class="modal-figure">
+      <img src="${img.src}" alt="${img.caption}" loading="lazy" />
+      <figcaption>${img.caption}</figcaption>
+    </figure>`).join('') : '';
+
+  const tags = p.tags ? p.tags.map(t => `<span class="project-tag">${t}</span>`).join('') : '';
+
+  content.innerHTML = `
+    <button class="modal-close" id="modal-close-btn">&#x2715;</button>
+    <div class="modal-title">${p.name}</div>
+    <div class="modal-subtitle">${tags}</div>
+    <div class="modal-section-title">Abstract</div>
+    <div class="modal-abstract">${p.detail.abstract}</div>
+    ${images ? `<div class="modal-section-title">Figures</div><div class="modal-images">${images}</div>` : ''}
+    ${p.url ? `<div class="modal-footer"><a href="${p.url}" class="modal-link" target="_blank" rel="noopener">View on GitHub →</a></div>` : ''}
+  `;
+
+  overlay.classList.add('open');
+  document.getElementById('modal-close-btn').addEventListener('click', closeProjectModal);
+  overlay.addEventListener('click', e => { if (e.target === overlay) closeProjectModal(); });
+  document.addEventListener('keydown', handleModalEsc);
+}
+
+function closeProjectModal() {
+  const overlay = document.getElementById('project-modal');
+  if (overlay) overlay.classList.remove('open');
+  document.removeEventListener('keydown', handleModalEsc);
+}
+
+function handleModalEsc(e) {
+  if (e.key === 'Escape') closeProjectModal();
 }
 
 function renderSkillsPage(d) {

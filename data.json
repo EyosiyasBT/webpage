@@ -82,7 +82,18 @@
       "type": "showcase",
       "description": "MSc thesis: an external explainability module for reinforcement learning agents. Built to answer why an autonomous vehicle crashed — using saliency maps, evolutionary algorithms, and UMAP counterfactuals to make black-box AI decisions transparent and auditable.",
       "url": "https://github.com/EyosiyasBT/ShowCase/tree/main/Master",
-      "tags": ["Python", "Reinforcement Learning", "Explainable AI", "PyTorch", "UMAP", "highway-env"]
+      "image": "https://raw.githubusercontent.com/EyosiyasBT/ShowCase/main/Master/images/fig5_1_accountability_module.png",
+      "tags": ["Python", "Reinforcement Learning", "Explainable AI", "PyTorch", "UMAP", "highway-env"],
+      "detail": {
+        "abstract": "Artificial Intelligence requires trust to be fully utilised by users and for them to feel safe while using them. Trust, and indirectly a sense of safety, has been overlooked in the pursuit of more accurate or better-performing black box models. The field of Explainable Artificial Intelligence and current regulations require more transparency and accountability from governmental and private institutes.\n\nThe solution proposed in this thesis is the Accountability Module — an external explanatory module designed to function with different AI models in different problem domains. The prototype was inspired by accident investigations regarding autonomous vehicles and was implemented for a simplified simulation of vehicles driving on a highway, with the goal of assisting an investigator in understanding why a vehicle crashed.\n\nThe module found the main factors in the decision that resulted in an accident, facilitated answering whether the outcome was avoidable, and identified inconsistencies in the agent's logic by examining different cases against each other.",
+        "images": [
+          { "src": "https://raw.githubusercontent.com/EyosiyasBT/ShowCase/main/Master/images/fig4_1_highway_env.png", "caption": "Figure 4.1 — The Highway-env simulation. The green box is the agent's car; yellow boxes are other vehicles." },
+          { "src": "https://raw.githubusercontent.com/EyosiyasBT/ShowCase/main/Master/images/fig5_1_accountability_module.png", "caption": "Figure 5.1 — Architecture of the Accountability Module. Three sub-modules answer: what drove the decision (Alpha), was a different outcome possible (Beta), and why did similar cases differ (Gamma)." },
+          { "src": "https://raw.githubusercontent.com/EyosiyasBT/ShowCase/main/Master/images/fig5_2_kinematic_saliency.png", "caption": "Figure 5.2 — Kinematic observation (a) and corresponding saliency map (b). Blue = high focus, red = low focus. The X positions of vehicles one and two are the most important factors." },
+          { "src": "https://raw.githubusercontent.com/EyosiyasBT/ShowCase/main/Master/images/fig7_6_umap_kinematics.png", "caption": "Figure 7.6 — UMAP projection of 300 kinematic observations. Each cluster corresponds to a dominant action; outliers reveal inconsistent agent behaviour." },
+          { "src": "https://raw.githubusercontent.com/EyosiyasBT/ShowCase/main/Master/images/fig7_5_dqn_saliency_comparison.png", "caption": "Figure 7.5 — Saliency maps from five independently trained DQN agents at the same frame. Three focus on vehicle presence; two focus only on the X position of the closest vehicle." }
+        ]
+      }
     },
     {
       "name": "SpotR",
