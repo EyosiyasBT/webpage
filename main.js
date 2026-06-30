@@ -281,9 +281,11 @@ let _diagNextId = 1;
 function initSicknessTool() {
   if (initSicknessTool._done) return;
   initSicknessTool._done = true;
-  fetch('/illnesses.json')
-    .then(r => r.json())
-    .then(illnesses => {
+  fetch('https://raw.githubusercontent.com/EyosiyasBT/ShowCase/main/Tools/PatientDiagnosticSystem/illnesses.txt')
+    .then(r => r.text())
+    .then(text => {
+      const illnesses = text.split('\n').map(l => l.trim()).filter(Boolean);
+
       const nameInput = document.getElementById('diag-name');
       const runBtn = document.getElementById('diag-run');
       const censorCheck = document.getElementById('diag-censor');
