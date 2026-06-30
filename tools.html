@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Eyosiyas — Tools</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+
+  <aside class="sidebar">
+    <div id="sidebar-data"></div>
+  </aside>
+
+  <div class="layout">
+    <nav class="topnav">
+      <a href="/">Home</a>
+      <a href="/projects.html">Projects</a>
+      <a href="/experience.html">Experience</a>
+      <a href="/skills.html">Skills</a>
+      <a href="/tools.html" class="active">Tools</a>
+    </nav>
+
+    <main class="main">
+      <section class="section">
+        <div class="section-title">Tools</div>
+        <div class="tools-picker-grid" id="tools-picker-grid"></div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Tool modal — X only, no background dismiss -->
+  <div class="modal-overlay" id="tool-modal">
+    <div class="modal" id="tool-modal-content">
+
+      <!-- Patient Diagnostic System -->
+      <div id="sickness-tool-modal" class="hidden">
+        <button class="modal-close" id="tool-modal-close">&#x2715;</button>
+        <div class="tool-title">Patient Diagnostic System</div>
+        <div class="tool-desc">Enter a patient name to receive an instant AI-powered medical diagnosis. Results may not be medically accurate.</div>
+
+        <div class="tool-body">
+          <div class="diag-input-row">
+            <input id="diag-name" class="diag-input" type="text" placeholder="Enter patient name..." autocomplete="off" />
+            <button class="diag-btn" id="diag-run">RUN ANALYSIS</button>
+          </div>
+          <label class="diag-censor-label">
+            <input type="checkbox" id="diag-censor" />
+            <span>CENSOR RESULTS</span>
+          </label>
+
+          <div class="diag-result" id="diag-result">
+            <div class="diag-patient" id="diag-patient"></div>
+            <div class="diag-illness" id="diag-illness">READY</div>
+            <div class="diag-severity" id="diag-severity"></div>
+          </div>
+
+          <div class="diag-history-header">
+            <span class="diag-history-label">RECENT DIAGNOSTIC LOGS</span>
+            <button class="diag-clear-btn" id="diag-clear">CLEAR</button>
+          </div>
+          <div class="diag-history" id="diag-history"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="/main.js"></script>
+</body>
+</html>
