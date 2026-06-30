@@ -6,7 +6,7 @@ fetch('/data.json')
     if (document.getElementById('projects-grid')) renderProjects(d);
     if (document.getElementById('experience-list')) renderExperience(d);
     if (document.getElementById('skills-page')) renderSkillsPage(d);
-    if (document.getElementById('sickness-tool')) initSicknessTool();
+    if (document.getElementById('tools-picker-grid')) renderToolsPicker(d);
     if (d.stats.some(s => s.github)) fetchGithubStats();
   });
 
@@ -237,7 +237,46 @@ function renderExperience(d) {
   }
 }
 
+function renderToolsPicker(d) {
+  const grid = document.getElementById('tools-picker-grid');
+  if (!grid) return;
+  const tools = d.tools || [];
+  grid.innerHTML = tools.map(t => `
+    <div class="tool-picker-card" data-tool-id="${t.id}">
+      <div class="tool-picker-icon">${t.icon}</div>
+      <div class="tool-picker-name">${t.name}</div>
+      <div class="tool-picker-desc">${t.description}</div>
+      <div class="tool-picker-cta">Open Tool &rarr;</div>
+    </div>`).join('');
+
+  grid.querySelectorAll('.tool-picker-card').forEach(card => {
+    card.addEventListener('click', () => openTool(card.dataset.toolId, d));
+  });
+
+  document.getElementById('tool-back-btn').addEventListener('click', () => {
+    document.getElementById('tools-picker').style.display = '';
+    document.getElementById('tool-active').style.display = 'none';
+    document.querySelectorAll('#tool-active .tool-card').forEach(el => el.style.display = 'none');
+  });
+}
+
+function openTool(toolId, d) {
+  document.getElementById('tools-picker').style.display = 'none';
+  const activeSection = document.getElementById('tool-active');
+  activeSection.style.display = '';
+
+  const tool = (d.tools || []).find(t => t.id === toolId);
+  document.getElementById('tool-active-title').textContent = tool ? tool.name : '';
+
+  const toolEl = document.getElementById(toolId);
+  if (toolEl) toolEl.style.display = '';
+
+  if (toolId === 'sickness-tool') initSicknessTool();
+}
+
 function initSicknessTool() {
+  if (initSicknessTool._done) return;
+  initSicknessTool._done = true;
   fetch('/illnesses.json')
     .then(r => r.json())
     .then(illnesses => {

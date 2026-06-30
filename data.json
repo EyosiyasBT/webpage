@@ -166,6 +166,14 @@
     { "name": "Norwegian", "level": "Native" },
     { "name": "English", "level": "Fluent" }
   ],
+  "tools": [
+    {
+      "id": "sickness-tool",
+      "name": "Patient Diagnostic System",
+      "description": "Enter a patient name to receive an instant AI-powered medical diagnosis.",
+      "icon": "⚕"
+    }
+  ],
   "links": {
     "showcase": "https://github.com/EyosiyasBT/ShowCase",
     "linkedin": "https://www.linkedin.com/in/ebtaye"

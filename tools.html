@@ -23,15 +23,25 @@
 
     <main class="main">
 
-      <section class="section">
+      <!-- Tool picker -->
+      <section class="section" id="tools-picker">
         <div class="section-title">Tools</div>
+        <div class="tools-picker-grid" id="tools-picker-grid"></div>
+      </section>
 
-        <div class="tool-card" id="sickness-tool">
+      <!-- Active tool view (hidden until a tool is selected) -->
+      <section class="section" id="tool-active" style="display:none">
+        <div class="tool-back-row">
+          <button class="tool-back-btn" id="tool-back-btn">&#8592; Back to Tools</button>
+          <div class="tool-active-title" id="tool-active-title"></div>
+        </div>
+
+        <!-- Patient Diagnostic System -->
+        <div class="tool-card" id="sickness-tool" style="display:none">
           <div class="tool-header">
             <div class="tool-title">Patient Diagnostic System</div>
             <div class="tool-desc">Enter a patient name to receive an instant AI-powered medical diagnosis. Results may not be medically accurate.</div>
           </div>
-
           <div class="tool-body">
             <div class="diag-input-row">
               <input id="diag-name" class="diag-input" type="text" placeholder="Enter patient name..." autocomplete="off" />
@@ -41,13 +51,11 @@
               <input type="checkbox" id="diag-censor" />
               <span>CENSOR RESULTS</span>
             </label>
-
             <div class="diag-result" id="diag-result">
               <div class="diag-patient" id="diag-patient"></div>
               <div class="diag-illness" id="diag-illness">READY</div>
               <div class="diag-severity" id="diag-severity"></div>
             </div>
-
             <div class="diag-history-label">RECENT DIAGNOSTIC LOGS</div>
             <div class="diag-history" id="diag-history"></div>
           </div>
