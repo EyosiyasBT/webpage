@@ -136,7 +136,8 @@ function openProjectModal(p) {
 
   content.innerHTML = `
     <button class="modal-close" id="modal-close-btn">&#x2715;</button>
-    <div class="modal-title">${p.name}</div>
+    <div class="modal-title">${p.fullTitle ? p.fullTitle : p.name}</div>
+    ${p.subtitle ? `<div class="modal-subtitle modal-thesis-sub">${p.subtitle}</div>` : ''}
     <div class="modal-subtitle">${tags}</div>
     <div class="modal-section-title">Abstract</div>
     <div class="modal-abstract">${p.detail.abstract}</div>

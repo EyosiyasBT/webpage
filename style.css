@@ -497,6 +497,13 @@ body {
   margin-bottom: 1.5rem;
 }
 
+.modal-thesis-sub {
+  font-size: 0.9rem;
+  color: var(--accent);
+  font-style: italic;
+  margin-bottom: 0.5rem;
+}
+
 .modal-section-title {
   font-size: 0.75rem;
   text-transform: uppercase;
@@ -510,7 +517,6 @@ body {
   font-size: 0.88rem;
   color: var(--muted);
   line-height: 1.7;
-  white-space: pre-line;
 }
 
 .modal-images {
