@@ -250,29 +250,33 @@ function renderToolsPicker(d) {
     </div>`).join('');
 
   grid.querySelectorAll('.tool-picker-card').forEach(card => {
-    card.addEventListener('click', () => openTool(card.dataset.toolId, d));
+    card.addEventListener('click', () => openTool(card.dataset.toolId));
   });
 
-  document.getElementById('tool-back-btn').addEventListener('click', () => {
-    document.getElementById('tools-picker').style.display = '';
-    document.getElementById('tool-active').style.display = 'none';
-    document.querySelectorAll('#tool-active .tool-card').forEach(el => el.style.display = 'none');
-  });
+  const closeBtn = document.getElementById('tool-modal-close');
+  if (closeBtn) closeBtn.addEventListener('click', closeToolModal);
 }
 
-function openTool(toolId, d) {
-  document.getElementById('tools-picker').style.display = 'none';
-  const activeSection = document.getElementById('tool-active');
-  activeSection.style.display = '';
+function openTool(toolId) {
+  const overlay = document.getElementById('tool-modal');
+  if (!overlay) return;
 
-  const tool = (d.tools || []).find(t => t.id === toolId);
-  document.getElementById('tool-active-title').textContent = tool ? tool.name : '';
+  document.querySelectorAll('#tool-modal-content > [id]').forEach(el => el.classList.add('hidden'));
+  const toolEl = document.getElementById(toolId + '-modal');
+  if (toolEl) toolEl.classList.remove('hidden');
 
-  const toolEl = document.getElementById(toolId);
-  if (toolEl) toolEl.style.display = '';
+  overlay.classList.add('open');
 
   if (toolId === 'sickness-tool') initSicknessTool();
 }
+
+function closeToolModal() {
+  const overlay = document.getElementById('tool-modal');
+  if (overlay) overlay.classList.remove('open');
+}
+
+const _diagPatientIds = {};
+let _diagNextId = 1;
 
 function initSicknessTool() {
   if (initSicknessTool._done) return;
@@ -302,6 +306,10 @@ function initSicknessTool() {
         const sevClass = isPositive ? 'sev-positive' : 'sev-' + severity;
         const stars = '★'.repeat(severity) + '☆'.repeat(5 - severity);
 
+        const nameKey = name.toLowerCase();
+        if (!_diagPatientIds[nameKey]) _diagPatientIds[nameKey] = _diagNextId++;
+        const patientId = _diagPatientIds[nameKey];
+
         patientEl.textContent = name.toUpperCase();
         illnessEl.className = 'diag-illness ' + sevClass;
         illnessEl.textContent = display;
@@ -310,12 +318,19 @@ function initSicknessTool() {
 
         const entry = document.createElement('div');
         entry.className = 'diag-history-entry' + (isPositive ? ' positive' : '');
-        entry.textContent = `${name.toUpperCase()} | ${display}${isPositive ? '' : ' | LVL ' + severity}`;
+        entry.textContent = `${patientId} | ${name.toUpperCase()} | ${display}${isPositive ? '' : ' | LVL ' + severity}`;
         historyEl.prepend(entry);
 
         nameInput.value = '';
         nameInput.focus();
       }
+
+      const clearBtn = document.getElementById('diag-clear');
+      if (clearBtn) clearBtn.addEventListener('click', () => {
+        historyEl.innerHTML = '';
+        Object.keys(_diagPatientIds).forEach(k => delete _diagPatientIds[k]);
+        _diagNextId = 1;
+      });
 
       runBtn.addEventListener('click', diagnose);
       nameInput.addEventListener('keydown', e => { if (e.key === 'Enter') diagnose(); });

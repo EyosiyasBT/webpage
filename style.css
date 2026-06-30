@@ -448,6 +448,8 @@ body {
 }
 
 /* ── Project Detail Modal ── */
+.hidden { display: none !important; }
+
 .modal-overlay {
   display: none;
   position: fixed;
@@ -667,6 +669,7 @@ body {
   font-size: 0.82rem;
   color: var(--muted);
   line-height: 1.5;
+  margin-bottom: 1.25rem;
 }
 
 .tool-body { padding: 1.5rem; }
@@ -759,12 +762,35 @@ body {
 .diag-illness.sev-5, .diag-severity.sev-5 { color: #ef4444; }
 .diag-illness.sev-positive, .diag-severity.sev-positive { color: #4ade80; }
 
+.diag-history-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
 .diag-history-label {
   font-size: 0.72rem;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--muted);
-  margin-bottom: 0.5rem;
+}
+
+.diag-clear-btn {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  border-radius: 4px;
+  padding: 0.15rem 0.6rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.diag-clear-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 .diag-history {
