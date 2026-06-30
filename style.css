@@ -168,7 +168,8 @@ body {
 .main {
   flex: 1;
   padding: 2.5rem 3rem;
-  max-width: 900px;
+  width: 100%;
+  max-width: 1200px;
 }
 
 /* ── Hero ── */
