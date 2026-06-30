@@ -6,6 +6,7 @@ fetch('/data.json')
     if (document.getElementById('projects-grid')) renderProjects(d);
     if (document.getElementById('experience-list')) renderExperience(d);
     if (document.getElementById('skills-page')) renderSkillsPage(d);
+    if (document.getElementById('sickness-tool')) initSicknessTool();
     if (d.stats.some(s => s.github)) fetchGithubStats();
   });
 
@@ -233,4 +234,50 @@ function renderExperience(d) {
         <span class="cert-meta">${l.level}</span>
       </div>`).join('');
   }
+}
+
+function initSicknessTool() {
+  fetch('/illnesses.json')
+    .then(r => r.json())
+    .then(illnesses => {
+      const nameInput = document.getElementById('diag-name');
+      const runBtn = document.getElementById('diag-run');
+      const censorCheck = document.getElementById('diag-censor');
+      const patientEl = document.getElementById('diag-patient');
+      const illnessEl = document.getElementById('diag-illness');
+      const severityEl = document.getElementById('diag-severity');
+      const historyEl = document.getElementById('diag-history');
+
+      function diagnose() {
+        const name = nameInput.value.trim();
+        if (!name) return;
+
+        const raw = illnesses[Math.floor(Math.random() * illnesses.length)];
+        const isPositive = raw.startsWith('x');
+        let display = isPositive ? raw.slice(1) : raw;
+        const severity = Math.floor(Math.random() * 5) + 1;
+
+        if (censorCheck.checked && !isPositive) display = 'BAD CONSEQUENCE';
+
+        const sevClass = isPositive ? 'sev-positive' : 'sev-' + severity;
+        const stars = '★'.repeat(severity) + '☆'.repeat(5 - severity);
+
+        patientEl.textContent = name.toUpperCase();
+        illnessEl.className = 'diag-illness ' + sevClass;
+        illnessEl.textContent = display;
+        severityEl.className = 'diag-severity ' + sevClass;
+        severityEl.textContent = isPositive ? '' : 'SEVERITY: ' + stars;
+
+        const entry = document.createElement('div');
+        entry.className = 'diag-history-entry' + (isPositive ? ' positive' : '');
+        entry.textContent = `${name.toUpperCase()} | ${display}${isPositive ? '' : ' | LVL ' + severity}`;
+        historyEl.prepend(entry);
+
+        nameInput.value = '';
+        nameInput.focus();
+      }
+
+      runBtn.addEventListener('click', diagnose);
+      nameInput.addEventListener('keydown', e => { if (e.key === 'Enter') diagnose(); });
+    });
 }
