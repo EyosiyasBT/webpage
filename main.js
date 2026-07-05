@@ -10,6 +10,21 @@ fetch('/data.json')
     if (d.stats.some(s => s.github)) fetchGithubStats();
   });
 
+function typeText(el, text, speed) {
+  let i = 0;
+  function tick() {
+    if (i <= text.length) {
+      el.textContent = text.slice(0, i);
+      i++;
+      setTimeout(tick, speed);
+    } else {
+      const cursor = document.querySelector('.typed-cursor');
+      if (cursor) cursor.classList.add('typed-cursor--done');
+    }
+  }
+  tick();
+}
+
 function fetchGithubStats() {
   fetch('https://api.github.com/users/EyosiyasBT')
     .then(r => r.json())
@@ -58,10 +73,11 @@ function renderSidebar(d) {
 function renderHome(d) {
   document.getElementById('hero').innerHTML = `
     <div class="hero-greeting">Hello, I'm</div>
-    <h1>${d.name}<br /><span>${d.title}</span></h1>
+    <h1>${d.name}<br /><span id="typed-title"><span id="typed-text"></span><span class="typed-cursor">|</span></span></h1>
     <p class="hero-sub">${d.bio}</p>
     <a href="${d.links.showcase}" class="hero-cta">View ShowCase</a>
   `;
+  typeText(document.getElementById('typed-text'), d.title, 55);
 
   document.getElementById('stats').innerHTML = d.stats.map(s => {
     let value = s.value;
@@ -190,19 +206,36 @@ function renderSkillsPage(d) {
 function renderExperience(d) {
   const expEl = document.getElementById('experience-list');
   if (expEl) {
-    expEl.innerHTML = d.experience.map(e => {
+    expEl.className = 'timeline-list';
+    expEl.innerHTML = d.experience.map((e, i) => {
       const tags = e.tags ? e.tags.map(t => `<span class="project-tag">${t}</span>`).join('') : '';
       return `
-        <div class="timeline-item">
-          <div class="timeline-dot"></div>
+        <div class="timeline-item${i === 0 ? ' timeline-item--open' : ''}" data-timeline>
+          <div class="timeline-track">
+            <div class="timeline-dot"></div>
+            <div class="timeline-line"></div>
+          </div>
           <div class="timeline-content">
-            <h3>${e.role}</h3>
-            <div class="timeline-meta">${e.company} · ${e.period}</div>
-            <p>${e.description}</p>
-            ${tags ? `<div class="timeline-tags">${tags}</div>` : ''}
+            <div class="timeline-header">
+              <div>
+                <h3>${e.role}</h3>
+                <div class="timeline-meta">${e.company} · ${e.period}</div>
+              </div>
+              <span class="timeline-chevron">&#9660;</span>
+            </div>
+            <div class="timeline-body">
+              <p>${e.description}</p>
+              ${tags ? `<div class="timeline-tags">${tags}</div>` : ''}
+            </div>
           </div>
         </div>`;
     }).join('');
+
+    expEl.querySelectorAll('[data-timeline]').forEach(item => {
+      item.querySelector('.timeline-header').addEventListener('click', () => {
+        item.classList.toggle('timeline-item--open');
+      });
+    });
   }
 
   const eduEl = document.getElementById('education-list');
