@@ -321,6 +321,7 @@ body {
 }
 
 .project-card:hover { border-color: var(--accent); }
+.project-card--clickable { cursor: pointer; }
 
 .project-card--image {
   padding: 0;
