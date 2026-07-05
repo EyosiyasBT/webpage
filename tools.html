@@ -64,6 +64,40 @@
         </div>
       </div>
 
+      <!-- Score Sheet -->
+      <div id="scoresheet-tool-modal" class="hidden">
+        <button class="modal-close" id="scoresheet-close-btn">&#x2715;</button>
+        <div class="tool-title">Score Sheet</div>
+        <div class="tool-desc">Configurable scoresheet for any game — set categories, players, and multipliers.</div>
+
+        <div class="tool-body">
+          <div class="ss-config">
+            <div class="ss-config-group">
+              <span class="ss-config-label">Rows</span>
+              <button class="ss-adj-btn" id="ss-rows-minus">&#8722;</button>
+              <span class="ss-count" id="ss-rows-count">6</span>
+              <button class="ss-adj-btn" id="ss-rows-plus">+</button>
+            </div>
+            <div class="ss-config-group">
+              <span class="ss-config-label">Players</span>
+              <button class="ss-adj-btn" id="ss-players-minus">&#8722;</button>
+              <span class="ss-count" id="ss-players-count">2</span>
+              <button class="ss-adj-btn" id="ss-players-plus">+</button>
+            </div>
+            <label class="ss-check-label">
+              <input type="checkbox" id="ss-hide-others" />
+              <span>Hide others</span>
+            </label>
+            <select id="ss-my-player" class="hidden ss-select"></select>
+            <button class="diag-btn" id="ss-reveal-btn">Reveal Sums</button>
+          </div>
+
+          <div class="ss-table-wrapper">
+            <table class="ss-table" id="ss-table"></table>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 

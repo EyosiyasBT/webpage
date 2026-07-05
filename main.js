@@ -299,9 +299,13 @@ function openTool(toolId) {
   const toolEl = document.getElementById(toolId + '-modal');
   if (toolEl) toolEl.classList.remove('hidden');
 
+  const content = document.getElementById('tool-modal-content');
+  if (content) content.classList.toggle('modal--wide', toolId === 'scoresheet-tool');
+
   overlay.classList.add('open');
 
   if (toolId === 'sickness-tool') initSicknessTool();
+  if (toolId === 'scoresheet-tool') initScoreSheet();
 }
 
 function closeToolModal() {
@@ -404,4 +408,179 @@ function initScrollAnimations() {
   document.querySelectorAll('.sidebar .skill-bar-fill').forEach((bar, i) => {
     setTimeout(() => bar.classList.add('bar-animate'), 300 + i * 80);
   });
+}
+
+// ── Score Sheet ──────────────────────────────────────────────────────────────
+
+const _ss = {
+  rows: 6,
+  players: 2,
+  gameName: '',
+  rowLabels: Array(6).fill(''),
+  multipliers: Array(6).fill(1),
+  playerNames: Array(2).fill(''),
+  scores: Array(6).fill(null).map(() => Array(2).fill('')),
+  sumsRevealed: false,
+  hideOthers: false,
+  myPlayer: 0,
+};
+
+function initScoreSheet() {
+  if (initScoreSheet._done) return;
+  initScoreSheet._done = true;
+
+  document.getElementById('ss-rows-minus').addEventListener('click', () => ssAdjRows(-1));
+  document.getElementById('ss-rows-plus').addEventListener('click', () => ssAdjRows(1));
+  document.getElementById('ss-players-minus').addEventListener('click', () => ssAdjPlayers(-1));
+  document.getElementById('ss-players-plus').addEventListener('click', () => ssAdjPlayers(1));
+
+  document.getElementById('ss-hide-others').addEventListener('change', function() {
+    _ss.hideOthers = this.checked;
+    document.getElementById('ss-my-player').classList.toggle('hidden', !this.checked);
+    ssRender();
+  });
+
+  document.getElementById('ss-my-player').addEventListener('change', function() {
+    _ss.myPlayer = parseInt(this.value);
+    ssRender();
+  });
+
+  document.getElementById('ss-reveal-btn').addEventListener('click', function() {
+    _ss.sumsRevealed = !_ss.sumsRevealed;
+    this.textContent = _ss.sumsRevealed ? 'Hide Sums' : 'Reveal Sums';
+    ssRender();
+  });
+
+  document.getElementById('scoresheet-close-btn').addEventListener('click', closeToolModal);
+
+  ssRefreshMyPlayerSelect();
+  ssRender();
+}
+
+function ssAdjRows(d) {
+  const n = Math.max(1, Math.min(20, _ss.rows + d));
+  if (n === _ss.rows) return;
+  if (n > _ss.rows) {
+    for (let r = _ss.rows; r < n; r++) {
+      _ss.rowLabels.push('');
+      _ss.multipliers.push(1);
+      _ss.scores.push(Array(_ss.players).fill(''));
+    }
+  } else {
+    _ss.rowLabels.length = n;
+    _ss.multipliers.length = n;
+    _ss.scores.length = n;
+  }
+  _ss.rows = n;
+  document.getElementById('ss-rows-count').textContent = n;
+  ssRender();
+}
+
+function ssAdjPlayers(d) {
+  const n = Math.max(1, Math.min(8, _ss.players + d));
+  if (n === _ss.players) return;
+  if (n > _ss.players) {
+    for (let p = _ss.players; p < n; p++) {
+      _ss.playerNames.push('');
+      _ss.scores.forEach(row => row.push(''));
+    }
+  } else {
+    _ss.playerNames.length = n;
+    _ss.scores.forEach(row => { row.length = n; });
+    if (_ss.myPlayer >= n) _ss.myPlayer = n - 1;
+  }
+  _ss.players = n;
+  document.getElementById('ss-players-count').textContent = n;
+  ssRefreshMyPlayerSelect();
+  ssRender();
+}
+
+function ssRefreshMyPlayerSelect() {
+  const sel = document.getElementById('ss-my-player');
+  if (!sel) return;
+  sel.innerHTML = _ss.playerNames.map((nm, i) =>
+    `<option value="${i}"${i === _ss.myPlayer ? ' selected' : ''}>${nm || 'Player ' + (i + 1)}</option>`
+  ).join('');
+}
+
+function ssCalcSum(p) {
+  let total = 0;
+  for (let r = 0; r < _ss.rows; r++) {
+    total += (parseFloat(_ss.scores[r][p]) || 0) * (parseFloat(_ss.multipliers[r]) || 1);
+  }
+  return total;
+}
+
+function ssEsc(v) {
+  return String(v == null ? '' : v)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function ssRender() {
+  const table = document.getElementById('ss-table');
+  if (!table) return;
+
+  let html = '<thead><tr>';
+  html += `<th class="ss-th-game"><input class="ss-game-input" id="ss-game-inp" type="text" placeholder="Game name…" value="${ssEsc(_ss.gameName)}" /></th>`;
+  for (let p = 0; p < _ss.players; p++) {
+    const blur = _ss.hideOthers && p !== _ss.myPlayer;
+    html += `<th class="ss-th-player${blur ? ' ss-blurred' : ''}"><input class="ss-name-input" data-p="${p}" type="text" placeholder="Player ${p + 1}" value="${ssEsc(_ss.playerNames[p])}"${blur ? ' tabindex="-1"' : ''} /></th>`;
+  }
+  html += '<th class="ss-th-mult">&#215;</th>';
+  html += '</tr></thead><tbody>';
+
+  for (let r = 0; r < _ss.rows; r++) {
+    html += '<tr>';
+    html += `<td class="ss-td-label"><input class="ss-label-input" data-r="${r}" type="text" placeholder="Row ${r + 1}" value="${ssEsc(_ss.rowLabels[r])}" /></td>`;
+    for (let p = 0; p < _ss.players; p++) {
+      const blur = _ss.hideOthers && p !== _ss.myPlayer;
+      html += `<td class="${blur ? 'ss-blurred' : ''}"><input class="ss-score-input" data-r="${r}" data-p="${p}" type="number" placeholder="0" value="${ssEsc(_ss.scores[r][p])}"${blur ? ' tabindex="-1"' : ''} /></td>`;
+    }
+    html += `<td class="ss-td-mult"><input class="ss-mult-input" data-r="${r}" type="number" min="0" step="0.1" placeholder="1" value="${ssEsc(_ss.multipliers[r])}" /></td>`;
+    html += '</tr>';
+  }
+
+  html += '<tr class="ss-sum-row"><td class="ss-sum-label">SUM</td>';
+  for (let p = 0; p < _ss.players; p++) {
+    const blur = _ss.hideOthers && p !== _ss.myPlayer;
+    const val = _ss.sumsRevealed ? ssCalcSum(p) : '—';
+    html += `<td class="ss-sum-cell${blur ? ' ss-blurred' : ''}" data-sum-p="${p}">${val}</td>`;
+  }
+  html += '<td class="ss-td-mult"></td></tr></tbody>';
+
+  table.innerHTML = html;
+
+  document.getElementById('ss-game-inp').addEventListener('input', function() { _ss.gameName = this.value; });
+
+  table.querySelectorAll('.ss-name-input').forEach(el => {
+    el.addEventListener('input', function() {
+      _ss.playerNames[+this.dataset.p] = this.value;
+      ssRefreshMyPlayerSelect();
+    });
+  });
+
+  table.querySelectorAll('.ss-label-input').forEach(el => {
+    el.addEventListener('input', function() { _ss.rowLabels[+this.dataset.r] = this.value; });
+  });
+
+  table.querySelectorAll('.ss-score-input').forEach(el => {
+    el.addEventListener('input', function() {
+      _ss.scores[+this.dataset.r][+this.dataset.p] = this.value;
+      if (_ss.sumsRevealed) ssUpdateSumCells();
+    });
+  });
+
+  table.querySelectorAll('.ss-mult-input').forEach(el => {
+    el.addEventListener('input', function() {
+      _ss.multipliers[+this.dataset.r] = this.value;
+      if (_ss.sumsRevealed) ssUpdateSumCells();
+    });
+  });
+}
+
+function ssUpdateSumCells() {
+  for (let p = 0; p < _ss.players; p++) {
+    const cell = document.querySelector(`[data-sum-p="${p}"]`);
+    if (cell) cell.textContent = ssCalcSum(p);
+  }
 }
