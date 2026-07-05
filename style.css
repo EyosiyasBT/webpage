@@ -105,13 +105,15 @@ body {
   height: 4px;
   background: var(--accent);
   border-radius: 2px;
+  width: 0;
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.skill-bar-fill.level-1 { width: 20%; }
-.skill-bar-fill.level-2 { width: 40%; }
-.skill-bar-fill.level-3 { width: 60%; }
-.skill-bar-fill.level-4 { width: 80%; }
-.skill-bar-fill.level-5 { width: 100%; }
+.skill-bar-fill.level-1.bar-animate { width: 20%; }
+.skill-bar-fill.level-2.bar-animate { width: 40%; }
+.skill-bar-fill.level-3.bar-animate { width: 60%; }
+.skill-bar-fill.level-4.bar-animate { width: 80%; }
+.skill-bar-fill.level-5.bar-animate { width: 100%; }
 
 .social-links {
   display: flex;
@@ -247,6 +249,18 @@ body {
 
 /* ── Section ── */
 .section { margin-bottom: 2.5rem; }
+
+/* ── Scroll-in animations ── */
+.fade-in {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
 
 .section-title {
   font-size: 1.1rem;

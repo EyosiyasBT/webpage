@@ -8,6 +8,7 @@ fetch('/data.json')
     if (document.getElementById('skills-page')) renderSkillsPage(d);
     if (document.getElementById('tools-picker-grid')) renderToolsPicker(d);
     if (d.stats.some(s => s.github)) fetchGithubStats();
+    initScrollAnimations();
   });
 
 function fetchGithubStats() {
@@ -337,4 +338,32 @@ function initSicknessTool() {
       runBtn.addEventListener('click', diagnose);
       nameInput.addEventListener('keydown', e => { if (e.key === 'Enter') diagnose(); });
     });
+}
+
+function initScrollAnimations() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const el = entry.target;
+
+      if (el.classList.contains('fade-in')) {
+        el.classList.add('visible');
+      }
+
+      el.querySelectorAll('.skill-bar-fill').forEach((bar, i) => {
+        setTimeout(() => bar.classList.add('bar-animate'), i * 60);
+      });
+
+      observer.unobserve(el);
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.project-card, .stat-card, .skill-card, .tool-picker-card, .cert-item').forEach(el => {
+    el.classList.add('fade-in');
+    observer.observe(el);
+  });
+
+  document.querySelectorAll('.skills-grid, .section').forEach(el => {
+    observer.observe(el);
+  });
 }
