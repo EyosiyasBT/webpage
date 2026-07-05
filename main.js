@@ -126,7 +126,7 @@ function renderProjectCards(projects, container, limit) {
     const image = p.image ? `<div class="project-image"><img src="${p.image}" alt="${p.name} preview" loading="lazy" /></div>` : '';
     const inner = `${image}<div class="project-body">${badge}<h3>${p.name}</h3><p>${p.description}</p><div class="project-tags">${tags}</div></div>`;
     if (p.detail) {
-      return `<div class="project-card${p.image ? ' project-card--image' : ''}" style="cursor:pointer" data-detail-index="${i}">${inner}</div>`;
+      return `<div class="project-card${p.image ? ' project-card--image' : ''} project-card--clickable" data-detail-index="${i}">${inner}</div>`;
     }
     return p.url
       ? `<a href="${p.url}" class="project-card${p.image ? ' project-card--image' : ''}" target="_blank" rel="noopener">${inner}</a>`
@@ -398,5 +398,10 @@ function initScrollAnimations() {
 
   document.querySelectorAll('.skills-grid, .section').forEach(el => {
     observer.observe(el);
+  });
+
+  // Sidebar bars are always in view — animate immediately with stagger
+  document.querySelectorAll('.sidebar .skill-bar-fill').forEach((bar, i) => {
+    setTimeout(() => bar.classList.add('bar-animate'), 300 + i * 80);
   });
 }
