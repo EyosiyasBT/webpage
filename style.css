@@ -915,6 +915,121 @@ body {
 
 .diag-history-entry.positive { color: #4ade80; }
 
+/* ── Score Sheet Tool ── */
+.modal--wide { max-width: min(95vw, 960px); width: min(95vw, 960px); }
+
+.ss-config {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.25rem;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.ss-config-group {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.88rem;
+}
+
+.ss-config-label { color: var(--muted); }
+
+.ss-adj-btn {
+  width: 26px;
+  height: 26px;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  color: var(--text);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  line-height: 1;
+  padding: 0;
+}
+.ss-adj-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+.ss-count { min-width: 1.4rem; text-align: center; font-weight: 700; color: var(--accent); }
+
+.ss-check-label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+
+.ss-select {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+.ss-table-wrapper {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.ss-table {
+  border-collapse: collapse;
+  min-width: 100%;
+  font-size: 0.88rem;
+}
+
+.ss-table th,
+.ss-table td { border: 1px solid var(--border); padding: 0; }
+
+.ss-table thead th { background: var(--sidebar-bg); }
+
+.ss-th-game { min-width: 130px; }
+.ss-th-player { min-width: 90px; text-align: center; }
+.ss-th-mult { min-width: 64px; text-align: center; color: var(--accent); padding: 0.4rem 0.5rem; font-size: 0.85rem; }
+
+.ss-game-input,
+.ss-name-input,
+.ss-label-input,
+.ss-score-input,
+.ss-mult-input {
+  background: transparent;
+  border: none;
+  color: var(--text);
+  padding: 0.4rem 0.5rem;
+  width: 100%;
+  font-size: 0.88rem;
+  font-family: inherit;
+}
+.ss-game-input:focus,
+.ss-name-input:focus,
+.ss-label-input:focus,
+.ss-score-input:focus,
+.ss-mult-input:focus { outline: none; background: rgba(240,192,64,0.07); }
+
+.ss-game-input { font-weight: 700; color: var(--accent); }
+.ss-name-input { text-align: center; font-weight: 600; }
+.ss-score-input { text-align: center; }
+.ss-mult-input { text-align: center; color: var(--accent); }
+
+.ss-td-label,
+.ss-td-mult { background: var(--sidebar-bg); }
+
+.ss-sum-row { background: var(--sidebar-bg); }
+.ss-sum-label { padding: 0.4rem 0.5rem; font-weight: 700; color: var(--accent); font-size: 0.8rem; letter-spacing: 0.06em; }
+.ss-sum-cell { text-align: center; padding: 0.4rem 0.5rem; font-weight: 700; color: var(--accent); }
+
+.ss-blurred { filter: blur(5px); pointer-events: none; user-select: none; }
+
+.ss-score-input::-webkit-outer-spin-button,
+.ss-score-input::-webkit-inner-spin-button,
+.ss-mult-input::-webkit-outer-spin-button,
+.ss-mult-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.ss-score-input,
+.ss-mult-input { -moz-appearance: textfield; }
+
 /* ── Responsive ── */
 @media (max-width: 768px) {
   body { flex-direction: column; }
