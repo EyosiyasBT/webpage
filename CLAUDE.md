@@ -189,7 +189,7 @@ Remove-Item $f
 ```
 
 **Shell notes:**
-- Working directory: `C:\Users\thenn\OneDrive\Dokumenter\webpage`
+- Working directory: `C:\webpage`
 - Primary shell: PowerShell — do NOT use `<<EOF` heredocs (bash only)
 - Bash tool is available for POSIX scripts but keep git/gh commands in PowerShell
 
