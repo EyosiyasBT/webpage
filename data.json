@@ -51,11 +51,13 @@
     { "name": "Cloud Migration", "category": "Methodology", "level": 2 },
     { "name": "Incident Management", "category": "Methodology", "level": 2 },
     { "name": "Data Engineering", "category": "Methodology", "level": 3 },
+    { "name": "dbt", "category": "Data Engineering", "level": 1 },
     { "name": "Mechatronics", "category": "Other", "level": 2 },
     { "name": "Robotics", "category": "Other", "level": 1 },
     { "name": "Problem Solving", "category": "Other", "level": 4 }
   ],
   "certifications": [
+    { "name": "dbt Fundamentals", "issuer": "dbt Labs", "date": "Jul 2026" },
     { "name": "Databricks Certified Data Engineer Associate", "issuer": "Databricks", "date": "Jun 2026" },
     { "name": "DP-900: Azure Data Fundamentals", "issuer": "Microsoft", "date": "Apr 2024" },
     { "name": "AI-900: Azure AI Fundamentals", "issuer": "Microsoft", "date": "Apr 2024" },
