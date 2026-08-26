@@ -1525,4 +1525,7 @@ body {
   .sidebar { width: 100%; min-height: auto; position: static; height: auto; }
   .main { padding: 1.5rem; }
   .stats { grid-template-columns: repeat(2, 1fr); }
+  .sp-grid--2,
+  .sp-grid--3,
+  .sp-grid--multi { grid-template-columns: 1fr; }
 }
