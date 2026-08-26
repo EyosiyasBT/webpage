@@ -973,7 +973,7 @@ function spNewSpinner() {
   return {
     title: '', mode: 'fair',
     items: [{ label: '', weight: 50 }, { label: '', weight: 50 }],
-    result: null, spinning: false, totalRotation: 0, editOpen: false
+    result: null, spinning: false, totalRotation: 0, editOpen: true
   };
 }
 
