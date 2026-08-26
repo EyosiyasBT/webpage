@@ -1306,6 +1306,219 @@ body {
 
 .fk-restart:hover { color: var(--text); }
 
+/* ── Spinner Tool ── */
+.sp-setup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 2rem 1rem;
+}
+.sp-setup-label { font-size: 1.05rem; color: var(--text); letter-spacing: 0.04em; }
+.sp-count-row { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; justify-content: center; }
+.sp-count-btn {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.95rem;
+  padding: 0.5rem 1.25rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+.sp-count-btn:hover { border-color: var(--accent); color: var(--accent); }
+.sp-count-btn--active { border-color: var(--accent); color: var(--accent); background: rgba(240,192,64,0.08); }
+.sp-custom-inp {
+  width: 72px;
+  padding: 0.48rem 0.6rem;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.95rem;
+  text-align: center;
+}
+.sp-custom-inp:focus { outline: none; border-color: var(--accent); }
+.sp-start-btn { margin-top: 0.25rem; }
+
+.sp-grid { display: grid; gap: 1.25rem; padding: 0.25rem 0 0.75rem; }
+.sp-grid--1 { grid-template-columns: 1fr; max-width: 300px; margin: 0 auto; }
+.sp-grid--2 { grid-template-columns: repeat(2, 1fr); }
+.sp-grid--3 { grid-template-columns: repeat(3, 1fr); }
+.sp-grid--multi { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
+
+.sp-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.9rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.65rem;
+}
+.sp-card--edit { align-items: stretch; gap: 0.55rem; }
+.sp-card-top { width: 100%; display: flex; justify-content: space-between; align-items: center; min-height: 22px; }
+.sp-card-title { font-size: 0.8rem; color: var(--accent); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+.sp-cog {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0.1rem 0.25rem;
+  border-radius: 4px;
+  transition: color 0.15s;
+  margin-left: auto;
+}
+.sp-cog:hover { color: var(--text); }
+
+.sp-wheel-wrap { position: relative; display: flex; flex-direction: column; align-items: center; }
+.sp-ptr { color: var(--accent); font-size: 0.95rem; line-height: 1; margin-bottom: -1px; z-index: 1; }
+.sp-wheel { width: 210px; height: 210px; display: block; }
+
+.sp-result {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.04em;
+  text-align: center;
+  min-height: 1.5rem;
+}
+.sp-result--empty { color: var(--muted); font-weight: 400; }
+
+.sp-spin-btn {
+  background: var(--accent);
+  color: #111;
+  border: none;
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 0.5rem 1.6rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+}
+.sp-spin-btn:hover:not(:disabled) { opacity: 0.85; transform: translateY(-1px); }
+.sp-spin-btn:disabled, .sp-spin-btn--busy { opacity: 0.45; cursor: default; transform: none; }
+
+.sp-reset-btn {
+  display: block;
+  margin: 0.5rem auto 0;
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 0.82rem;
+  cursor: pointer;
+  font-family: inherit;
+  padding: 0.25rem 0.5rem;
+}
+.sp-reset-btn:hover { color: var(--text); }
+
+.sp-edit-hd { display: flex; justify-content: flex-end; }
+.sp-done-btn {
+  background: none;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  font-family: inherit;
+  font-size: 0.82rem;
+  padding: 0.28rem 0.75rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.sp-done-btn:hover { background: rgba(240,192,64,0.1); }
+
+.sp-title-inp {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.42rem 0.6rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.88rem;
+}
+.sp-title-inp:focus { outline: none; border-color: var(--accent); }
+
+.sp-mode-row { display: flex; gap: 0.35rem; }
+.sp-mode-btn {
+  flex: 1;
+  padding: 0.38rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-family: inherit;
+  font-size: 0.82rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+.sp-mode-btn:hover { border-color: var(--accent); color: var(--accent); }
+.sp-mode-btn--active { border-color: var(--accent); color: var(--accent); background: rgba(240,192,64,0.08); }
+
+.sp-items-list { display: flex; flex-direction: column; gap: 0.35rem; overflow-y: auto; max-height: 240px; }
+.sp-item-row { display: flex; gap: 0.35rem; align-items: center; }
+.sp-lbl-inp {
+  flex: 1;
+  padding: 0.38rem 0.5rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.84rem;
+  min-width: 0;
+}
+.sp-lbl-inp:focus { outline: none; border-color: var(--accent); }
+.sp-wt-inp {
+  width: 52px;
+  padding: 0.38rem 0.35rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.84rem;
+  text-align: center;
+  flex-shrink: 0;
+}
+.sp-wt-inp:focus { outline: none; border-color: var(--accent); }
+.sp-rm-btn {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  width: 26px;
+  height: 26px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s, border-color 0.15s;
+}
+.sp-rm-btn:hover { color: #e05c5c; border-color: #e05c5c; }
+.sp-add-btn {
+  background: none;
+  border: 1px dashed var(--border);
+  color: var(--muted);
+  width: 100%;
+  padding: 0.38rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.82rem;
+  transition: color 0.15s, border-color 0.15s;
+}
+.sp-add-btn:hover { color: var(--accent); border-color: var(--accent); }
+
 /* ── Responsive ── */
 @media (max-width: 768px) {
   body { flex-direction: column; }

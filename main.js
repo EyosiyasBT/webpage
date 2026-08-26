@@ -300,13 +300,14 @@ function openTool(toolId) {
   if (toolEl) toolEl.classList.remove('hidden');
 
   const content = document.getElementById('tool-modal-content');
-  if (content) content.classList.toggle('modal--wide', toolId === 'scoresheet-tool');
+  if (content) content.classList.toggle('modal--wide', toolId === 'scoresheet-tool' || toolId === 'spinner-tool');
 
   overlay.classList.add('open');
 
   if (toolId === 'sickness-tool') initSicknessTool();
   if (toolId === 'scoresheet-tool') initScoreSheet();
   if (toolId === 'farkle-tool') initFarkleTool();
+  if (toolId === 'spinner-tool') initSpinnerTool();
 }
 
 function closeToolModal() {
@@ -947,4 +948,293 @@ function farkleNextTurn() {
   f.hotDice = false;
   f.dice.forEach(d => { d.state = 'idle'; d.value = 1; });
   farkleRender();
+}
+
+// ── Spinner Tool ──────────────────────────────────────────────────────────────
+
+var _spinner = null;
+
+var SP_COLORS = [
+  '#f0c040','#e05c5c','#5ca0e0','#5ce09f',
+  '#e05ce0','#e09a5c','#5ce0d8','#a05ce0',
+  '#c0e05c','#e0c05c','#5c7ae0','#e0765c'
+];
+
+function initSpinnerTool() {
+  if (!initSpinnerTool._done) {
+    initSpinnerTool._done = true;
+    document.getElementById('spinner-close-btn').addEventListener('click', closeToolModal);
+    _spinner = { phase: 'setup', countMode: '2', customVal: '3', spinners: [] };
+  }
+  spinnerRender();
+}
+
+function spNewSpinner() {
+  return {
+    title: '', mode: 'fair',
+    items: [{ label: '', weight: 50 }, { label: '', weight: 50 }],
+    result: null, spinning: false, totalRotation: 0, editOpen: false
+  };
+}
+
+function spWeightedPick(s) {
+  var active = s.items.filter(function(it) {
+    return it.label.trim() && (s.mode === 'fair' || it.weight > 0);
+  });
+  if (!active.length) return null;
+  if (s.mode === 'fair') return active[Math.floor(Math.random() * active.length)];
+  var total = active.reduce(function(acc, it) { return acc + it.weight; }, 0);
+  if (!total) return null;
+  var r = Math.random() * total;
+  for (var i = 0; i < active.length; i++) {
+    r -= active[i].weight;
+    if (r <= 0) return active[i];
+  }
+  return active[active.length - 1];
+}
+
+function spSegments(s) {
+  var active = s.items.filter(function(it) {
+    return it.label.trim() && (s.mode === 'fair' || it.weight > 0);
+  });
+  if (!active.length) return [];
+  var total = s.mode === 'weighted'
+    ? active.reduce(function(acc, it) { return acc + it.weight; }, 0)
+    : active.length;
+  var segs = [], start = 0;
+  active.forEach(function(it, i) {
+    var w = s.mode === 'weighted' ? it.weight : 1;
+    var angle = (w / total) * 360;
+    segs.push({ item: it, start: start, angle: angle, color: SP_COLORS[i % SP_COLORS.length] });
+    start += angle;
+  });
+  return segs;
+}
+
+function spWheelSVG(s, id) {
+  var segs = spSegments(s);
+  var cx = 120, cy = 120, r = 108;
+  if (!segs.length) {
+    return '<svg viewBox="0 0 240 240" class="sp-wheel"><circle cx="120" cy="120" r="108" fill="#2a2a2a" stroke="#3a3a3a" stroke-width="2"/><text x="120" y="116" text-anchor="middle" fill="#555" font-size="12" font-family="inherit">Add items</text><text x="120" y="134" text-anchor="middle" fill="#555" font-size="12" font-family="inherit">to spin</text></svg>';
+  }
+  var body = '';
+  if (segs.length === 1) {
+    body += '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="' + segs[0].color + '"/>';
+    var sl = segs[0].item.label;
+    var lbl = sl.length > 12 ? sl.substring(0, 11) + '…' : sl;
+    body += '<text x="' + cx + '" y="' + cy + '" text-anchor="middle" dominant-baseline="middle" font-size="13" fill="#111" font-weight="600" font-family="inherit">' + lbl + '</text>';
+  } else {
+    segs.forEach(function(seg) {
+      var a1 = (seg.start - 90) * Math.PI / 180;
+      var a2 = (seg.start + seg.angle - 90) * Math.PI / 180;
+      var x1 = cx + r * Math.cos(a1), y1 = cy + r * Math.sin(a1);
+      var x2 = cx + r * Math.cos(a2), y2 = cy + r * Math.sin(a2);
+      var large = seg.angle > 180 ? 1 : 0;
+      body += '<path d="M' + cx + ',' + cy + ' L' + x1.toFixed(2) + ',' + y1.toFixed(2) +
+        ' A' + r + ',' + r + ' 0 ' + large + ',1 ' + x2.toFixed(2) + ',' + y2.toFixed(2) + ' Z" fill="' + seg.color + '"/>';
+      if (seg.angle >= 20) {
+        var ma = (seg.start + seg.angle / 2 - 90) * Math.PI / 180;
+        var lx = cx + r * 0.62 * Math.cos(ma);
+        var ly = cy + r * 0.62 * Math.sin(ma);
+        var raw = seg.item.label;
+        var lbl2 = raw.length > 9 ? raw.substring(0, 8) + '…' : raw;
+        body += '<text x="' + lx.toFixed(1) + '" y="' + ly.toFixed(1) + '" text-anchor="middle" dominant-baseline="middle" font-size="11" fill="#111" font-weight="600" font-family="inherit">' + lbl2 + '</text>';
+      }
+    });
+    segs.forEach(function(seg) {
+      var a = (seg.start - 90) * Math.PI / 180;
+      body += '<line x1="' + cx + '" y1="' + cy + '" x2="' + (cx + r * Math.cos(a)).toFixed(2) + '" y2="' + (cy + r * Math.sin(a)).toFixed(2) + '" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>';
+    });
+  }
+  body += '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="none" stroke="rgba(0,0,0,0.18)" stroke-width="2"/>';
+  body += '<circle cx="' + cx + '" cy="' + cy + '" r="8" fill="#1a1a1a"/><circle cx="' + cx + '" cy="' + cy + '" r="4" fill="#888"/>';
+  return '<svg viewBox="0 0 240 240" class="sp-wheel" id="sp-wheel-' + id + '">' + body + '</svg>';
+}
+
+function spinnerRender() {
+  var root = document.getElementById('spinner-root');
+  if (!root) return;
+  root.innerHTML = _spinner.phase === 'setup' ? spSetupHTML() : spGameHTML();
+  _spinner.phase === 'setup' ? spBindSetup() : spBindGame();
+}
+
+function spSetupHTML() {
+  var opts = ['1', '2', '3', 'custom'];
+  var btns = opts.map(function(m) {
+    var lbl = m === 'custom' ? 'Custom' : m;
+    var cls = 'sp-count-btn' + (_spinner.countMode === m ? ' sp-count-btn--active' : '');
+    return '<button class="' + cls + '" data-mode="' + m + '">' + lbl + '</button>';
+  }).join('');
+  var ci = _spinner.countMode === 'custom'
+    ? '<input id="sp-custom-val" class="sp-custom-inp" type="number" min="1" max="8" value="' + (_spinner.customVal || '3') + '">'
+    : '';
+  return '<div class="sp-setup"><div class="sp-setup-label">How many spinners?</div>' +
+    '<div class="sp-count-row">' + btns + ci + '</div>' +
+    '<button class="diag-btn sp-start-btn" id="sp-start">START</button></div>';
+}
+
+function spBindSetup() {
+  document.querySelectorAll('.sp-count-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() { _spinner.countMode = this.dataset.mode; spinnerRender(); });
+  });
+  var ci = document.getElementById('sp-custom-val');
+  if (ci) ci.addEventListener('input', function() { _spinner.customVal = this.value; });
+  document.getElementById('sp-start').addEventListener('click', function() {
+    var n = _spinner.countMode === 'custom'
+      ? Math.min(8, Math.max(1, parseInt(_spinner.customVal) || 2))
+      : parseInt(_spinner.countMode);
+    _spinner.spinners = [];
+    for (var i = 0; i < n; i++) _spinner.spinners.push(spNewSpinner());
+    _spinner.phase = 'game';
+    spinnerRender();
+  });
+}
+
+function spGameHTML() {
+  var n = _spinner.spinners.length;
+  var gc = n === 1 ? 'sp-grid--1' : n === 2 ? 'sp-grid--2' : n === 3 ? 'sp-grid--3' : 'sp-grid--multi';
+  var cards = _spinner.spinners.map(function(s, i) { return spCardHTML(s, i); }).join('');
+  return '<div class="sp-grid ' + gc + '">' + cards + '</div>' +
+    '<button class="sp-reset-btn" id="sp-reset">↩ New Setup</button>';
+}
+
+function spCardHTML(s, i) {
+  if (s.editOpen) return spEditHTML(s, i);
+  var active = s.items.filter(function(it) { return it.label.trim(); });
+  var resCls = 'sp-result' + (s.result ? '' : ' sp-result--empty');
+  var resTxt = s.result || '—';
+  var dis = (s.spinning || !active.length) ? ' disabled' : '';
+  var btnCls = 'sp-spin-btn' + (s.spinning ? ' sp-spin-btn--busy' : '');
+  var titleHtml = s.title ? '<div class="sp-card-title">' + s.title + '</div>' : '<div></div>';
+  return '<div class="sp-card" id="sp-card-' + i + '">' +
+    '<div class="sp-card-top">' + titleHtml +
+    '<button class="sp-cog" data-idx="' + i + '" title="Edit">⚙</button></div>' +
+    '<div class="sp-wheel-wrap" id="sp-wrap-' + i + '">' +
+    '<div class="sp-ptr">▼</div>' + spWheelSVG(s, i) + '</div>' +
+    '<div class="' + resCls + '">' + resTxt + '</div>' +
+    '<button class="' + btnCls + '" data-idx="' + i + '"' + dis + '>' +
+    (s.spinning ? 'Spinning…' : 'SPIN') + '</button></div>';
+}
+
+function spEditHTML(s, i) {
+  var fCls = 'sp-mode-btn' + (s.mode === 'fair' ? ' sp-mode-btn--active' : '');
+  var wCls = 'sp-mode-btn' + (s.mode === 'weighted' ? ' sp-mode-btn--active' : '');
+  var rows = s.items.map(function(it, j) {
+    var wt = s.mode === 'weighted'
+      ? '<input class="sp-wt-inp" type="number" min="0" max="100" value="' + it.weight + '" data-idx="' + i + '" data-item="' + j + '">'
+      : '';
+    return '<div class="sp-item-row">' +
+      '<input class="sp-lbl-inp" type="text" placeholder="Item name…" value="' + it.label + '" data-idx="' + i + '" data-item="' + j + '">' +
+      wt + '<button class="sp-rm-btn" data-idx="' + i + '" data-item="' + j + '">\xd7</button></div>';
+  }).join('');
+  return '<div class="sp-card sp-card--edit" id="sp-card-' + i + '">' +
+    '<div class="sp-edit-hd"><button class="sp-done-btn" data-idx="' + i + '">✓ Done</button></div>' +
+    '<input class="sp-title-inp" type="text" placeholder="Spinner title (optional)" value="' + s.title + '" data-idx="' + i + '">' +
+    '<div class="sp-mode-row"><button class="' + fCls + '" data-idx="' + i + '" data-mode="fair">Fair</button>' +
+    '<button class="' + wCls + '" data-idx="' + i + '" data-mode="weighted">Weighted</button></div>' +
+    '<div class="sp-items-list">' + rows + '</div>' +
+    '<button class="sp-add-btn" data-idx="' + i + '">+ Add item</button></div>';
+}
+
+function spBindGame() {
+  document.querySelectorAll('.sp-cog').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      _spinner.spinners[+this.dataset.idx].editOpen = true; spinnerRender();
+    });
+  });
+  document.querySelectorAll('.sp-spin-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() { spDoSpin(+this.dataset.idx); });
+  });
+  document.querySelectorAll('.sp-done-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      _spinner.spinners[+this.dataset.idx].editOpen = false; spinnerRender();
+    });
+  });
+  document.querySelectorAll('.sp-mode-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      _spinner.spinners[+this.dataset.idx].mode = this.dataset.mode; spinnerRender();
+    });
+  });
+  document.querySelectorAll('.sp-title-inp').forEach(function(inp) {
+    inp.addEventListener('input', function() { _spinner.spinners[+this.dataset.idx].title = this.value; });
+  });
+  document.querySelectorAll('.sp-lbl-inp').forEach(function(inp) {
+    inp.addEventListener('input', function() {
+      _spinner.spinners[+this.dataset.idx].items[+this.dataset.item].label = this.value;
+    });
+  });
+  document.querySelectorAll('.sp-wt-inp').forEach(function(inp) {
+    inp.addEventListener('input', function() {
+      _spinner.spinners[+this.dataset.idx].items[+this.dataset.item].weight =
+        Math.min(100, Math.max(0, parseInt(this.value) || 0));
+    });
+  });
+  document.querySelectorAll('.sp-rm-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var s = _spinner.spinners[+this.dataset.idx];
+      s.items.splice(+this.dataset.item, 1);
+      if (!s.items.length) s.items.push({ label: '', weight: 50 });
+      spinnerRender();
+    });
+  });
+  document.querySelectorAll('.sp-add-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      _spinner.spinners[+this.dataset.idx].items.push({ label: '', weight: 50 }); spinnerRender();
+    });
+  });
+  var rb = document.getElementById('sp-reset');
+  if (rb) rb.addEventListener('click', function() {
+    _spinner.phase = 'setup'; _spinner.spinners = []; spinnerRender();
+  });
+  // Restore wheel rotation after re-render (no transition)
+  _spinner.spinners.forEach(function(s, i) {
+    if (s.editOpen || !s.totalRotation) return;
+    var svg = document.getElementById('sp-wheel-' + i);
+    if (svg) { svg.style.transition = 'none'; svg.style.transform = 'rotate(' + s.totalRotation + 'deg)'; }
+  });
+}
+
+function spDoSpin(i) {
+  var s = _spinner.spinners[i];
+  if (s.spinning) return;
+  var winner = spWeightedPick(s);
+  if (!winner) return;
+  var segs = spSegments(s);
+  var winSeg = null;
+  for (var k = 0; k < segs.length; k++) {
+    if (segs[k].item === winner) { winSeg = segs[k]; break; }
+  }
+  if (!winSeg) return;
+
+  // midpoint of winner segment, clockwise degrees from top
+  var mid = winSeg.start + winSeg.angle / 2;
+  // rotate wheel clockwise by R: pointer (at 0°) then points to (360-R)%360 from original top
+  // need (360-R)%360 = mid  →  R%360 = (360-mid)%360
+  var targetMod = (360 - mid + 360) % 360;
+  var currentMod = s.totalRotation % 360;
+  var delta = (targetMod - currentMod + 360) % 360;
+  if (delta < 60) delta += 360;
+  delta += 360 * (3 + Math.floor(Math.random() * 3));
+
+  s.spinning = true;
+  s.result = null;
+  s.totalRotation += delta;
+
+  // Update button directly (avoid full re-render which would lose transition origin)
+  var btn = document.querySelector('.sp-spin-btn[data-idx="' + i + '"]');
+  if (btn) { btn.disabled = true; btn.textContent = 'Spinning…'; btn.classList.add('sp-spin-btn--busy'); }
+  var res = document.querySelector('#sp-card-' + i + ' .sp-result');
+  if (res) { res.textContent = '—'; res.className = 'sp-result sp-result--empty'; }
+
+  var svg = document.getElementById('sp-wheel-' + i);
+  if (svg) {
+    svg.style.transition = 'transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99)';
+    svg.style.transform = 'rotate(' + s.totalRotation + 'deg)';
+  }
+
+  setTimeout(function() {
+    s.spinning = false;
+    s.result = winner.label;
+    spinnerRender();
+  }, 4200);
 }
