@@ -306,6 +306,7 @@ function openTool(toolId) {
 
   if (toolId === 'sickness-tool') initSicknessTool();
   if (toolId === 'scoresheet-tool') initScoreSheet();
+  if (toolId === 'farkle-tool') initFarkleTool();
 }
 
 function closeToolModal() {
@@ -583,4 +584,367 @@ function ssUpdateSumCells() {
     const cell = document.querySelector(`[data-sum-p="${p}"]`);
     if (cell) cell.textContent = ssCalcSum(p);
   }
+}
+
+// ── Farkle ───────────────────────────────────────────────────────────────────
+
+const FARKLE_PIPS = {
+  1: [0,0,0, 0,1,0, 0,0,0],
+  2: [0,0,1, 0,0,0, 1,0,0],
+  3: [0,0,1, 0,1,0, 1,0,0],
+  4: [1,0,1, 0,0,0, 1,0,1],
+  5: [1,0,1, 0,1,0, 1,0,1],
+  6: [1,0,1, 1,0,1, 1,0,1],
+};
+
+let _farkle = null;
+
+function initFarkleTool() {
+  if (initFarkleTool._done) return;
+  initFarkleTool._done = true;
+  document.getElementById('farkle-close-btn').addEventListener('click', closeToolModal);
+  farkleShowSetup();
+}
+
+function farkleShowSetup() {
+  _farkle = null;
+  const root = document.getElementById('farkle-root');
+  if (!root) return;
+  root.innerHTML = `
+    <div class="fk-setup">
+      <div class="fk-setup-row">
+        <span class="fk-setup-lbl">Players</span>
+        <div class="fk-toggle-grp">
+          <button class="fk-tog fk-tog--on" data-pc="1">1 Player</button>
+          <button class="fk-tog" data-pc="2">2 Players</button>
+        </div>
+      </div>
+      <div class="fk-setup-row">
+        <span class="fk-setup-lbl">Player 1</span>
+        <input class="fk-inp" id="fkn1" type="text" placeholder="Player 1" maxlength="20" />
+      </div>
+      <div class="fk-setup-row hidden" id="fkn2-row">
+        <span class="fk-setup-lbl">Player 2</span>
+        <input class="fk-inp" id="fkn2" type="text" placeholder="Player 2" maxlength="20" />
+      </div>
+      <div class="fk-setup-row">
+        <span class="fk-setup-lbl">Target</span>
+        <input class="fk-inp fk-inp--num" id="fk-target" type="number" value="4000" min="500" step="500" />
+      </div>
+      <button class="fk-start-btn" id="fk-start">Start Game</button>
+    </div>
+  `;
+
+  let playerCount = 1;
+  root.querySelectorAll('[data-pc]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      playerCount = parseInt(btn.dataset.pc);
+      root.querySelectorAll('[data-pc]').forEach(b => b.classList.toggle('fk-tog--on', b === btn));
+      document.getElementById('fkn2-row').classList.toggle('hidden', playerCount === 1);
+    });
+  });
+
+  document.getElementById('fk-start').addEventListener('click', () => {
+    const n1 = document.getElementById('fkn1').value.trim() || 'Player 1';
+    const n2 = playerCount === 2 ? (document.getElementById('fkn2').value.trim() || 'Player 2') : null;
+    const target = Math.max(500, parseInt(document.getElementById('fk-target').value) || 4000);
+    farkleStartGame(playerCount === 2 ? '2p' : '1p', playerCount === 2 ? [n1, n2] : [n1], target);
+  });
+}
+
+function farkleStartGame(mode, names, target) {
+  _farkle = {
+    mode,
+    players: names.map(n => ({ name: n, score: 0 })),
+    currentPlayer: 0,
+    targetScore: target,
+    turnScore: 0,
+    dice: Array(6).fill(null).map(() => ({ value: 1, state: 'idle' })),
+    rolling: false,
+    hotDice: false,
+    rounds: 0,
+    won: false,
+  };
+  farkleRender();
+}
+
+function farkleScoreValues(vals) {
+  if (!vals.length) return 0;
+  const n = vals.length;
+  const sorted = [...vals].sort((a, b) => a - b);
+
+  if (n === 6 && sorted.join('') === '123456') return 1500;
+
+  if (n === 5) {
+    const s = sorted.join('');
+    if (s === '12345') return 500;
+    if (s === '23456') return 750;
+  }
+
+  if (n === 6) {
+    for (let si = 0; si < 6; si++) {
+      const sub = sorted.filter((_, i) => i !== si);
+      const ss = sub.join('');
+      if (ss === '12345' || ss === '23456') {
+        const base = ss === '12345' ? 500 : 750;
+        const extra = sorted[si] === 1 ? 100 : sorted[si] === 5 ? 50 : 0;
+        return base + extra;
+      }
+    }
+  }
+
+  const cnt = new Array(7).fill(0);
+  vals.forEach(v => cnt[v]++);
+  let score = 0;
+  for (let v = 1; v <= 6; v++) {
+    const c = cnt[v];
+    if (c >= 3) {
+      score += (v === 1 ? 1000 : v * 100) * Math.pow(2, c - 3);
+    } else if (v === 1) {
+      score += c * 100;
+    } else if (v === 5) {
+      score += c * 50;
+    }
+  }
+  return score;
+}
+
+function farkleSelectableDice(rolledWithIdx) {
+  const n = rolledWithIdx.length;
+  const vals = rolledWithIdx.map(d => d.value);
+  const sorted = [...vals].sort((a, b) => a - b);
+  const sel = new Set();
+
+  if (n === 6 && sorted.join('') === '123456') {
+    rolledWithIdx.forEach(d => sel.add(d.idx));
+    return sel;
+  }
+  if (n === 5 && (sorted.join('') === '12345' || sorted.join('') === '23456')) {
+    rolledWithIdx.forEach(d => sel.add(d.idx));
+    return sel;
+  }
+  if (n === 6) {
+    for (let si = 0; si < n; si++) {
+      const sub = rolledWithIdx.filter((_, i) => i !== si);
+      const ss = sub.map(d => d.value).sort((a, b) => a - b).join('');
+      if (ss === '12345' || ss === '23456') {
+        sub.forEach(d => sel.add(d.idx));
+        if (rolledWithIdx[si].value === 1 || rolledWithIdx[si].value === 5) sel.add(rolledWithIdx[si].idx);
+      }
+    }
+    if (sel.size > 0) return sel;
+  }
+
+  const cnt = new Array(7).fill(0);
+  const byVal = {};
+  rolledWithIdx.forEach(d => {
+    cnt[d.value]++;
+    if (!byVal[d.value]) byVal[d.value] = [];
+    byVal[d.value].push(d.idx);
+  });
+  for (let v = 1; v <= 6; v++) {
+    if (cnt[v] >= 3) byVal[v].forEach(i => sel.add(i));
+  }
+  if (cnt[1] > 0 && cnt[1] < 3) byVal[1].forEach(i => sel.add(i));
+  if (cnt[5] > 0 && cnt[5] < 3) byVal[5].forEach(i => sel.add(i));
+
+  return sel;
+}
+
+function farkleSelectedScore() {
+  return farkleScoreValues(_farkle.dice.filter(d => d.state === 'selected').map(d => d.value));
+}
+
+function farkleCanRoll() {
+  const f = _farkle;
+  if (!f || f.rolling || f.won) return false;
+  if (f.dice.some(d => d.state === 'idle')) return true;
+  const sel = f.dice.filter(d => d.state === 'selected');
+  return sel.length > 0 && farkleSelectedScore() > 0;
+}
+
+function farkleCanBank() {
+  const f = _farkle;
+  if (!f || f.rolling || f.won) return false;
+  const sel = f.dice.filter(d => d.state === 'selected');
+  return sel.length > 0 && farkleSelectedScore() > 0;
+}
+
+function farklePips(v) {
+  return FARKLE_PIPS[v || 1].map(on =>
+    '<span class="fkp' + (on ? ' fkp--on' : '') + '"></span>'
+  ).join('');
+}
+
+function farkleRender(msg) {
+  const root = document.getElementById('farkle-root');
+  if (!root || !_farkle) return;
+  const f = _farkle;
+  const cp = f.players[f.currentPlayer];
+  const pending = farkleSelectedScore();
+  const canRoll = farkleCanRoll();
+  const canBank = farkleCanBank();
+  const bankTotal = f.turnScore + pending;
+
+  const chips = f.players.map((p, i) =>
+    '<div class="fk-chip' + (i === f.currentPlayer ? ' fk-chip--on' : '') + '">' +
+    p.name + '<span>' + p.score + '</span></div>'
+  ).join('');
+
+  const dice = f.dice.map((d, i) => {
+    const cl = 'fk-die die--' + d.state;
+    const attr = (d.state === 'selectable' || d.state === 'selected') ? ' data-die="' + i + '"' : '';
+    return '<div class="' + cl + '"' + attr + '><div class="fk-pips">' + farklePips(d.value) + '</div></div>';
+  }).join('');
+
+  const displayMsg = msg || (f.hotDice ? '🔥 Hot Dice! Roll again!' : '');
+  const rollLabel = f.hotDice ? '🔥 Roll All' : 'Roll';
+  const soloRounds = f.mode === '1p' ? '<div class="fk-rounds">Round ' + (f.rounds + 1) + '</div>' : '';
+  const winBanner = f.won ? '<div class="fk-win-banner">🏆 ' + cp.name + ' wins!</div>' : '';
+
+  root.innerHTML =
+    '<div class="fk-header">' +
+      '<div class="fk-turn">' + (f.won ? '🏆 ' + cp.name + ' wins!' : cp.name + '\'s Turn') + '</div>' +
+      '<div class="fk-chips">' + chips + '</div>' +
+      soloRounds +
+    '</div>' +
+    '<div class="fk-info">' +
+      'Turn: <strong>' + f.turnScore + '</strong>' +
+      (pending > 0 ? '<span class="fk-pending"> +' + pending + '</span>' : '') +
+      '<span class="fk-target"> / ' + f.targetScore + '</span>' +
+    '</div>' +
+    '<div class="fk-dice-row">' + dice + '</div>' +
+    '<div class="fk-msg">' + (displayMsg || '&nbsp;') + '</div>' +
+    '<div class="fk-btns">' +
+      '<button class="fk-btn fk-btn--roll" id="fk-roll"' + (canRoll ? '' : ' disabled') + '>' + rollLabel + '</button>' +
+      '<button class="fk-btn fk-btn--bank" id="fk-bank"' + (canBank ? '' : ' disabled') + '>' +
+        'Bank' + (bankTotal > 0 && canBank ? ' · ' + bankTotal : '') +
+      '</button>' +
+    '</div>' +
+    '<button class="fk-restart" id="fk-restart">↺ New Game</button>';
+
+  if (!f.won) {
+    var rollBtn = document.getElementById('fk-roll');
+    var bankBtn = document.getElementById('fk-bank');
+    if (rollBtn) rollBtn.addEventListener('click', farkleRoll);
+    if (bankBtn) bankBtn.addEventListener('click', farkleBank);
+    root.querySelectorAll('.fk-die[data-die]').forEach(function(el) {
+      el.addEventListener('click', function() { farkleToggleDie(parseInt(el.dataset.die)); });
+    });
+  }
+  document.getElementById('fk-restart').addEventListener('click', function() {
+    farkleShowSetup();
+  });
+}
+
+function farkleToggleDie(idx) {
+  const f = _farkle;
+  if (!f || f.rolling) return;
+  const d = f.dice[idx];
+  if (d.state === 'selectable') d.state = 'selected';
+  else if (d.state === 'selected') d.state = 'selectable';
+  farkleRender();
+}
+
+function farkleRoll() {
+  const f = _farkle;
+  if (!f || f.rolling || f.won) return;
+
+  const hasIdle = f.dice.some(d => d.state === 'idle');
+
+  if (!hasIdle) {
+    const sel = f.dice.filter(d => d.state === 'selected');
+    if (!sel.length || farkleSelectedScore() === 0) return;
+    const score = farkleScoreValues(sel.map(d => d.value));
+    sel.forEach(d => { d.state = 'locked'; });
+    f.turnScore += score;
+
+    if (f.dice.every(d => d.state === 'locked')) {
+      f.hotDice = true;
+      f.dice.forEach(d => { d.state = 'idle'; });
+      farkleRender();
+      return;
+    }
+  }
+
+  farkleDoRoll();
+}
+
+function farkleDoRoll() {
+  const f = _farkle;
+  f.rolling = true;
+  f.hotDice = false;
+
+  const toRollIdxs = [];
+  f.dice.forEach(function(d, i) { if (d.state !== 'locked') toRollIdxs.push(i); });
+  const finalVals = toRollIdxs.map(function() { return Math.floor(Math.random() * 6) + 1; });
+
+  toRollIdxs.forEach(function(i) { f.dice[i].state = 'rolling'; });
+  farkleRender();
+
+  var interval = setInterval(function() {
+    toRollIdxs.forEach(function(i) { f.dice[i].value = Math.floor(Math.random() * 6) + 1; });
+    var rolling = document.querySelectorAll('.fk-die.die--rolling');
+    rolling.forEach(function(el, j) {
+      var pips = el.querySelector('.fk-pips');
+      if (pips) pips.innerHTML = farklePips(f.dice[toRollIdxs[j]].value);
+    });
+  }, 80);
+
+  setTimeout(function() {
+    clearInterval(interval);
+    toRollIdxs.forEach(function(i, j) { f.dice[i].value = finalVals[j]; });
+
+    var rolledWithIdx = toRollIdxs.map(function(i) { return { value: f.dice[i].value, idx: i }; });
+    var selSet = farkleSelectableDice(rolledWithIdx);
+
+    toRollIdxs.forEach(function(i) {
+      f.dice[i].state = selSet.has(i) ? 'selectable' : 'dead';
+    });
+
+    f.rolling = false;
+
+    if (!f.dice.some(function(d) { return d.state === 'selectable'; })) {
+      farkleDoFarkle();
+      return;
+    }
+    farkleRender();
+  }, 850);
+}
+
+function farkleBank() {
+  const f = _farkle;
+  if (!f || f.rolling || f.won) return;
+  const sel = f.dice.filter(d => d.state === 'selected');
+  if (!sel.length || farkleSelectedScore() === 0) return;
+
+  f.turnScore += farkleScoreValues(sel.map(d => d.value));
+  f.players[f.currentPlayer].score += f.turnScore;
+
+  if (f.players[f.currentPlayer].score >= f.targetScore) {
+    f.won = true;
+    farkleRender();
+    return;
+  }
+  farkleNextTurn();
+}
+
+function farkleDoFarkle() {
+  const f = _farkle;
+  f.turnScore = 0;
+  farkleRender('💀 Farkle! Turn lost.');
+  setTimeout(function() { farkleNextTurn(); }, 1800);
+}
+
+function farkleNextTurn() {
+  const f = _farkle;
+  if (f.mode === '2p') {
+    f.currentPlayer = 1 - f.currentPlayer;
+  } else {
+    f.rounds++;
+  }
+  f.turnScore = 0;
+  f.hotDice = false;
+  f.dice.forEach(d => { d.state = 'idle'; d.value = 1; });
+  farkleRender();
 }

@@ -180,6 +180,12 @@
       "name": "Score Sheet",
       "description": "Configurable scoresheet for any game. Set row categories, player columns, and multipliers.",
       "icon": "📊"
+    },
+    {
+      "id": "farkle-tool",
+      "name": "Farkle",
+      "description": "The push-your-luck dice game from Kingdom Come: Deliverance. Roll 6 dice, build combinations, and race to the target score.",
+      "icon": "🎲"
     }
   ],
   "links": {
