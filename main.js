@@ -962,10 +962,12 @@ var SP_COLORS = [
 
 function initSpinnerTool() {
   if (!initSpinnerTool._done) {
-    initSpinnerTool._done = true;
-    document.getElementById('spinner-close-btn').addEventListener('click', closeToolModal);
+    var closeBtn = document.getElementById('spinner-close-btn');
+    if (closeBtn) closeBtn.addEventListener('click', closeToolModal);
     _spinner = { phase: 'setup', countMode: '2', customVal: '3', spinners: [] };
+    initSpinnerTool._done = true;
   }
+  if (!_spinner) _spinner = { phase: 'setup', countMode: '2', customVal: '3', spinners: [] };
   spinnerRender();
 }
 
