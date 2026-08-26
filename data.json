@@ -186,6 +186,12 @@
       "name": "Farkle",
       "description": "The push-your-luck dice game from Kingdom Come: Deliverance. Roll 6 dice, build combinations, and race to the target score.",
       "icon": "🎲"
+    },
+    {
+      "id": "spinner-tool",
+      "name": "Spinner",
+      "description": "Create one or more weighted spinners — players, truth or dare, challenges, and more. Fair or weighted, editable on the fly.",
+      "icon": "🎡"
     }
   ],
   "links": {
