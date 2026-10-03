@@ -2,7 +2,7 @@ fetch('/data.json')
   .then(r => r.json())
   .then(d => {
     renderSidebar(d);
-    if (document.getElementById('hero')) renderHome(d);
+    if (document.getElementById('home-content')) renderHome(d);
     if (document.getElementById('projects-grid')) renderProjects(d);
     if (document.getElementById('experience-list')) renderExperience(d);
     if (document.getElementById('skills-page')) renderSkillsPage(d);
@@ -72,26 +72,32 @@ function renderSidebar(d) {
 }
 
 function renderHome(d) {
-  document.getElementById('hero').innerHTML = `
-    <div class="hero-greeting">Hello, I'm</div>
-    <h1>${d.name}<br /><span id="typed-title"><span id="typed-text"></span><span class="typed-cursor">|</span></span></h1>
-    <p class="hero-sub">${d.bio}</p>
-    <a href="${d.links.showcase}" class="hero-cta">View ShowCase</a>
+  const el = document.getElementById('home-content');
+  if (!el) return;
+  const tools = d.tools || [];
+  el.innerHTML = `
+    <div class="home-hero">
+      <img class="home-photo" src="/photo.svg" alt="${d.name}" />
+      <div class="home-hero-text">
+        <h1 class="home-name">${d.name}</h1>
+        <div class="home-role">${d.title}</div>
+        <p class="home-bio">${d.bio}</p>
+        <div class="home-cta-row">
+          <a href="/experience.html" class="home-cta">Experience &rarr;</a>
+          <a href="/projects.html" class="home-cta home-cta--outline">Projects &rarr;</a>
+        </div>
+      </div>
+    </div>
+    <div class="home-section-title">Tools &amp; Games</div>
+    <div class="home-tools-grid">
+      ${tools.map(t => `
+        <a href="/tools.html?tool=${t.id}" class="home-tool-card">
+          <div class="home-tool-icon">${t.icon}</div>
+          <div class="home-tool-name">${t.name}</div>
+          <div class="home-tool-desc">${t.description}</div>
+        </a>`).join('')}
+    </div>
   `;
-  typeText(document.getElementById('typed-text'), d.title, 55);
-
-  document.getElementById('stats').innerHTML = d.stats.map(s => {
-    let value = s.value;
-    if (s.github) value = `<span data-github>...</span>`;
-    if (s.skills) value = d.skills.length || '...';
-    return `
-      <div class="stat-card">
-        <div class="stat-number">${value}</div>
-        <div class="stat-label">${s.label}</div>
-      </div>`;
-  }).join('');
-
-  renderProjectCards(d.projects.slice(0, 3), document.getElementById('projects-preview'), 3);
 }
 
 function renderProjects(d) {
@@ -289,6 +295,9 @@ function renderToolsPicker(d) {
 
   const closeBtn = document.getElementById('tool-modal-close');
   if (closeBtn) closeBtn.addEventListener('click', closeToolModal);
+
+  const toolParam = new URLSearchParams(window.location.search).get('tool');
+  if (toolParam) openTool(toolParam);
 }
 
 function openTool(toolId) {
